@@ -38,7 +38,6 @@ export default function Loader() {
             <h1
               style={{
                 color: '#2563eb',
-                fontFamily: '"Plus Jakarta Sans", sans-serif',
                 fontSize: 36,
                 fontWeight: 800,
                 letterSpacing: '0.05em',

@@ -154,7 +154,6 @@ export default function Navbar() {
           href="#home"
           onClick={(e) => handleLinkClick(e, '#home')}
           style={{
-            fontFamily: '"Plus Jakarta Sans", sans-serif',
             fontSize: 22,
             fontWeight: 800,
             color: '#2563eb',
@@ -177,7 +176,6 @@ export default function Navbar() {
                 href={link.href}
                 onClick={(e) => handleLinkClick(e, link.href)}
                 style={{
-                  fontFamily: '"DM Sans", sans-serif',
                   fontSize: 14,
                   fontWeight: isActive ? 600 : 500,
                   color: isActive ? '#2563eb' : '#475569',
@@ -290,7 +288,6 @@ export default function Navbar() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
                 <span
                   style={{
-                    fontFamily: '"Plus Jakarta Sans", sans-serif',
                     fontSize: 'clamp(19px, 4.5vw, 22px)',
                     fontWeight: 800,
                     color: '#2563eb',
@@ -334,7 +331,6 @@ export default function Navbar() {
                     }}
                     transition={{ duration: 0.2, ease: 'easeOut' }}
                     style={{
-                      fontFamily: '"Plus Jakarta Sans", sans-serif',
                       fontSize: 'clamp(18px, 6vw, 22px)',
                       fontWeight: 700,
                       color: activeSection === link.id ? '#2563eb' : '#0f172a',

@@ -128,7 +128,6 @@ export default function Projects() {
                   <span
                     style={{
                       position: 'absolute',
-                      fontFamily: '"Plus Jakarta Sans", sans-serif',
                       fontSize: 'clamp(56px, 18vw, 80px)',
                       fontWeight: 900,
                       color: '#0f172a',
@@ -174,7 +173,6 @@ export default function Projects() {
                   {/* Project Name */}
                   <h3
                     style={{
-                      fontFamily: '"Plus Jakarta Sans", sans-serif',
                       fontSize: 20,
                       fontWeight: 700,
                       color: '#0f172a',

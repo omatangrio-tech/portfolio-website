@@ -9,8 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        heading: ['"Plus Jakarta Sans"', 'sans-serif'],
-        body: ['"DM Sans"', 'sans-serif'],
+        heading: ['"Poppins"', 'sans-serif'],
+        body: ['"Poppins"', 'sans-serif'],
       },
     },
   },

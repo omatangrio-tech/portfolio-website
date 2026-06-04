@@ -144,11 +144,12 @@ export default function Hero() {
             {/* H1 */}
             <h1
               style={{
+                fontFamily: '"Bebas Neue", sans-serif',
                 fontSize: 'clamp(38px, 10vw, 88px)',
-                fontWeight: 800,
+                fontWeight: 400,
                 lineHeight: 1.05,
                 color: '#0f172a',
-                letterSpacing: '-0.03em',
+                letterSpacing: '0.02em',
               }}
             >
               Hi, I'm <br />
@@ -197,7 +198,6 @@ export default function Hero() {
                   fontWeight: 600,
                   border: 'none',
                   transition: 'all 0.2s',
-                  boxShadow: '0 8px 32px rgba(37,99,235,0.18)',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-2px)';
@@ -275,8 +275,15 @@ export default function Hero() {
                 border: '1px solid var(--border)',
                 borderRadius: 16,
                 padding: '20px clamp(16px, 4vw, 24px)',
-                boxShadow: 'var(--shadow-sm)',
-                animation: 'float 4s ease-in-out infinite',
+                transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(37,99,235,0.35)';
+                e.currentTarget.style.boxShadow = '0 0 0 2px rgba(59,130,246,0.14)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border)';
+                e.currentTarget.style.boxShadow = 'none';
               }}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
@@ -337,8 +344,15 @@ export default function Hero() {
                 border: '1px solid var(--border)',
                 borderRadius: 16,
                 padding: '20px clamp(16px, 4vw, 24px)',
-                boxShadow: 'var(--shadow-sm)',
-                animation: 'float 4s ease-in-out 1s infinite',
+                transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(37,99,235,0.35)';
+                e.currentTarget.style.boxShadow = '0 0 0 2px rgba(59,130,246,0.14)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border)';
+                e.currentTarget.style.boxShadow = 'none';
               }}
             >
               <div className="grid grid-cols-2 gap-4">
@@ -368,8 +382,15 @@ export default function Hero() {
                 border: '1px solid var(--border)',
                 borderRadius: 16,
                 padding: '20px clamp(16px, 4vw, 24px)',
-                boxShadow: 'var(--shadow-sm)',
-                animation: 'float 4s ease-in-out 2s infinite',
+                transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(37,99,235,0.35)';
+                e.currentTarget.style.boxShadow = '0 0 0 2px rgba(59,130,246,0.14)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'var(--border)';
+                e.currentTarget.style.boxShadow = 'none';
               }}
             >
               <div

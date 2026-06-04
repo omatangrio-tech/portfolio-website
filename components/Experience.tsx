@@ -156,7 +156,6 @@ export default function Experience() {
                       style={{
                         fontSize: 'clamp(18px, 4vw, 20px)',
                         fontWeight: 700,
-                        fontFamily: '"Plus Jakarta Sans", sans-serif',
                         color: '#0f172a',
                       }}
                     >

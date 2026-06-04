@@ -92,7 +92,6 @@ export default function Contact() {
                   fontSize: 'clamp(32px, 7vw, 40px)',
                   fontWeight: 800,
                   color: '#0f172a',
-                  fontFamily: '"Plus Jakarta Sans", sans-serif',
                 }}
               >
                 Get In <span className="gradient-text">Touch</span>

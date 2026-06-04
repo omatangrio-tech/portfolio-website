@@ -31,7 +31,6 @@ export default function Footer() {
           <div>
             <div
               style={{
-                fontFamily: '"Plus Jakarta Sans", sans-serif',
                 fontSize: 22,
                 fontWeight: 800,
                 color: '#2563eb',
