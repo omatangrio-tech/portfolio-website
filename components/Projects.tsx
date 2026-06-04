@@ -81,7 +81,7 @@ export default function Projects() {
           <p
             style={{
               color: '#94a3b8',
-              fontSize: 17,
+              fontSize: 'clamp(15px, 2.8vw, 17px)',
               marginTop: 12,
             }}
           >
@@ -129,7 +129,7 @@ export default function Projects() {
                     style={{
                       position: 'absolute',
                       fontFamily: '"Plus Jakarta Sans", sans-serif',
-                      fontSize: 80,
+                      fontSize: 'clamp(56px, 18vw, 80px)',
                       fontWeight: 900,
                       color: '#0f172a',
                       opacity: 0.06,

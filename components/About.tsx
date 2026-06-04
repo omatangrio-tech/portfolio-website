@@ -115,8 +115,8 @@ export default function About() {
             <div
               style={{
                 position: 'relative',
-                width: 320,
-                height: 400,
+                width: 'min(100%, 320px)',
+                height: 'clamp(300px, 78vw, 400px)',
               }}
             >
               {/* Decorative spinning dashed ring */}
@@ -174,7 +174,7 @@ export default function About() {
             />
             <p
               style={{
-                fontSize: 17,
+                fontSize: 'clamp(15px, 2.8vw, 17px)',
                 lineHeight: 1.9,
                 color: '#475569',
                 marginBottom: 32,

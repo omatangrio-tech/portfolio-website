@@ -5,16 +5,26 @@ import { useEffect, useRef, useState } from 'react';
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const fillRef = useRef<HTMLDivElement>(null);
   const mousePos = useRef({ x: -100, y: -100 });
   const ringPos = useRef({ x: -100, y: -100 });
-  const [isHovered, setIsHovered] = useState(false);
-  const [isClicked, setIsClicked] = useState(false);
-  const [dotColor, setDotColor] = useState('#2563eb');
+  const isHoveredRef = useRef(false);
+  const isClickedRef = useRef(false);
+  const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [visible, setVisible] = useState(false);
+  const [isPointerDevice, setIsPointerDevice] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const apply = () => setIsPointerDevice(media.matches);
+    apply();
+    media.addEventListener('change', apply);
+    return () => media.removeEventListener('change', apply);
+  }, []);
 
   // Sync cursor-none class with visibility state to hide system cursor safely
   useEffect(() => {
-    if (visible) {
+    if (visible && isPointerDevice) {
       document.documentElement.classList.add('custom-cursor-active');
     } else {
       document.documentElement.classList.remove('custom-cursor-active');
@@ -22,15 +32,15 @@ export default function CustomCursor() {
     return () => {
       document.documentElement.classList.remove('custom-cursor-active');
     };
-  }, [visible]);
+  }, [visible, isPointerDevice]);
 
   useEffect(() => {
     const dot = dotRef.current;
     const ring = ringRef.current;
-    if (!dot || !ring) return;
+    const fill = fillRef.current;
+    if (!dot || !ring || !fill || !isPointerDevice) return;
 
     let animFrame: number;
-    let clickTimeout: NodeJS.Timeout;
 
     const onMouseMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
@@ -44,8 +54,7 @@ export default function CustomCursor() {
       const target = e.target as HTMLElement;
       const interactive = target.closest('a, button, [role="button"], input, textarea');
       if (interactive) {
-        setIsHovered(true);
-        setDotColor('#f97316'); // Orange dot
+        isHoveredRef.current = true;
       }
     };
 
@@ -53,8 +62,7 @@ export default function CustomCursor() {
       const target = e.target as HTMLElement;
       const interactive = target.closest('a, button, [role="button"], input, textarea');
       if (interactive) {
-        setIsHovered(false);
-        setDotColor('#2563eb'); // Reset to Blue dot
+        isHoveredRef.current = false;
       }
     };
 
@@ -63,10 +71,10 @@ export default function CustomCursor() {
       const interactive = target.closest('a, button, [role="button"], input, textarea');
       if (!interactive) return;
 
-      setIsClicked(true);
-      clearTimeout(clickTimeout);
-      clickTimeout = setTimeout(() => {
-        setIsClicked(false);
+      isClickedRef.current = true;
+      if (clickTimeoutRef.current) clearTimeout(clickTimeoutRef.current);
+      clickTimeoutRef.current = setTimeout(() => {
+        isClickedRef.current = false;
       }, 150);
     };
 
@@ -92,12 +100,20 @@ export default function CustomCursor() {
         // Move dot instantly inside anim frame to avoid rendering stutter
         dot.style.transform = `translate3d(${mousePos.current.x - 4}px, ${mousePos.current.y - 4}px, 0)`;
         dot.style.opacity = '1';
+        dot.style.background = isHoveredRef.current ? '#f97316' : '#2563eb';
 
         // Lerp ring position smoothly
         ringPos.current.x += (mousePos.current.x - ringPos.current.x) * 0.15;
         ringPos.current.y += (mousePos.current.y - ringPos.current.y) * 0.15;
         ring.style.transform = `translate3d(${ringPos.current.x - 18}px, ${ringPos.current.y - 18}px, 0)`;
         ring.style.opacity = '1';
+
+        fill.style.background = isHoveredRef.current ? 'rgba(37, 99, 235, 0.08)' : 'transparent';
+        fill.style.transform = isClickedRef.current
+          ? 'scale(1.8)'
+          : isHoveredRef.current
+            ? 'scale(1.4)'
+            : 'scale(1)';
       } else {
         dot.style.opacity = '0';
         ring.style.opacity = '0';
@@ -125,9 +141,11 @@ export default function CustomCursor() {
       document.documentElement.removeEventListener('mouseleave', onMouseLeave);
       document.documentElement.removeEventListener('mouseenter', onMouseEnter);
       cancelAnimationFrame(animFrame);
-      clearTimeout(clickTimeout);
+      if (clickTimeoutRef.current) clearTimeout(clickTimeoutRef.current);
     };
-  }, [visible]);
+  }, [visible, isPointerDevice]);
+
+  if (!isPointerDevice) return null;
 
   return (
     <>
@@ -140,7 +158,7 @@ export default function CustomCursor() {
           left: 0,
           width: 8,
           height: 8,
-          background: dotColor,
+          background: '#2563eb',
           borderRadius: '50%',
           pointerEvents: 'none',
           zIndex: 100000,
@@ -172,12 +190,13 @@ export default function CustomCursor() {
         }}
       >
         <div
+          ref={fillRef}
           style={{
             width: '100%',
             height: '100%',
             borderRadius: '50%',
-            background: isHovered ? 'rgba(37, 99, 235, 0.08)' : 'transparent',
-            transform: isClicked ? 'scale(1.8)' : isHovered ? 'scale(1.4)' : 'scale(1)',
+            background: 'transparent',
+            transform: 'scale(1)',
             transition: 'transform 0.15s ease-out, background 0.2s ease',
           }}
         />

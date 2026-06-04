@@ -68,7 +68,7 @@ export default function Experience() {
                 key={exp.id}
                 style={{
                   display: 'flex',
-                  gap: 32,
+                  gap: 'clamp(12px, 3vw, 32px)',
                   marginBottom: 48,
                   position: 'relative',
                   alignItems: 'flex-start',
@@ -120,7 +120,7 @@ export default function Experience() {
                     background: 'white',
                     border: '1px solid var(--border)',
                     borderRadius: 20,
-                    padding: '28px 32px',
+                    padding: 'clamp(18px, 4vw, 28px) clamp(16px, 4.5vw, 32px)',
                     boxShadow: isHovered ? 'var(--shadow-md)' : 'var(--shadow-sm)',
                     borderColor: isHovered ? 'var(--blue-border)' : 'var(--border)',
                     transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
@@ -154,7 +154,7 @@ export default function Experience() {
                   >
                     <h3
                       style={{
-                        fontSize: 20,
+                        fontSize: 'clamp(18px, 4vw, 20px)',
                         fontWeight: 700,
                         fontFamily: '"Plus Jakarta Sans", sans-serif',
                         color: '#0f172a',

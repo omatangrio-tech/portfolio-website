@@ -38,7 +38,7 @@ export default function Skills() {
         <p
           style={{
             color: '#94a3b8',
-            fontSize: 17,
+            fontSize: 'clamp(15px, 2.8vw, 17px)',
             marginTop: 12,
             marginBottom: 56,
           }}

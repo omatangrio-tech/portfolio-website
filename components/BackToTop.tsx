@@ -20,8 +20,8 @@ export default function BackToTop() {
       aria-label="Back to top"
       style={{
         position: 'fixed',
-        bottom: 32,
-        right: 32,
+        bottom: 20,
+        right: 16,
         width: 44,
         height: 44,
         background: '#2563eb',

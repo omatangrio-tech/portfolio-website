@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(false);
 
   const navLinks = [
     { label: 'Home', href: '#home', id: 'home' },
@@ -29,6 +31,32 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 768px)');
+    const apply = () => setIsDesktop(media.matches);
+    apply();
+    media.addEventListener('change', apply);
+    return () => media.removeEventListener('change', apply);
+  }, []);
+
+  useEffect(() => {
+    if (isDesktop) {
+      setMobileMenuOpen(false);
+    }
+  }, [isDesktop]);
 
   useEffect(() => {
     const observerOptions = {
@@ -69,34 +97,49 @@ export default function Navbar() {
     }
   };
 
-  const navStyle: React.CSSProperties = scrolled
-    ? {
-        position: 'fixed',
-        top: 16,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: 'min(880px, 92vw)',
-        background: 'rgba(255, 255, 255, 0.92)',
-        backdropFilter: 'blur(20px) saturate(180%)',
-        border: '1px solid rgba(37, 99, 235, 0.15)',
-        borderRadius: 9999,
-        padding: '12px 32px',
-        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5)',
-        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-        zIndex: 999,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }
+  const navStyle: React.CSSProperties = isDesktop
+    ? scrolled
+      ? {
+          position: 'fixed',
+          top: 16,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: 'min(880px, 92vw)',
+          background: 'rgba(255, 255, 255, 0.92)',
+          backdropFilter: 'blur(20px) saturate(180%)',
+          border: '1px solid rgba(37, 99, 235, 0.15)',
+          borderRadius: 9999,
+          padding: '12px 32px',
+          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5)',
+          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          zIndex: 999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }
+      : {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          background: 'white',
+          borderBottom: '1px solid var(--border)',
+          padding: '16px clamp(24px, 5vw, 64px)',
+          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          zIndex: 999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }
     : {
-        position: 'absolute',
+        position: 'fixed',
         top: 0,
         left: 0,
         width: '100%',
         background: 'white',
         borderBottom: '1px solid var(--border)',
-        padding: '16px clamp(24px, 5vw, 64px)',
-        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        padding: '14px clamp(16px, 5vw, 24px)',
+        transition: 'all 0.3s ease',
         zIndex: 999,
         display: 'flex',
         alignItems: 'center',
@@ -122,7 +165,10 @@ export default function Navbar() {
         </a>
 
         {/* Links - Desktop */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: scrolled ? 36 : 24 }} className="hidden md:flex">
+        <div
+          style={{ alignItems: 'center', gap: scrolled ? 28 : 20 }}
+          className="hidden md:flex"
+        >
           {navLinks.map((link) => {
             const isActive = activeSection === link.id;
             return (
@@ -205,83 +251,129 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'white',
-            zIndex: 1000,
-            display: 'flex',
-            flexDirection: 'column',
-            padding: '24px clamp(24px, 5vw, 64px)',
-          }}
-        >
-          {/* Header row */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 64 }}>
-            <span
+      {/* Mobile Sidebar */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            onClick={() => setMobileMenuOpen(false)}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(15, 23, 42, 0.4)',
+              zIndex: 1000,
+              display: 'flex',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              onClick={(e) => e.stopPropagation()}
               style={{
-                fontFamily: '"Plus Jakarta Sans", sans-serif',
-                fontSize: 22,
-                fontWeight: 800,
-                color: '#2563eb',
+                width: 'min(88vw, 360px)',
+                height: '100%',
+                background: 'white',
+                borderLeft: '1px solid var(--border)',
+                boxShadow: '-12px 0 36px rgba(2, 6, 23, 0.15)',
+                display: 'flex',
+                flexDirection: 'column',
+                padding: '20px clamp(16px, 5vw, 28px)',
               }}
             >
-              Om.dev
-            </span>
-            <button
-              onClick={() => setMobileMenuOpen(false)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#2563eb',
-                padding: 4,
-              }}
-              aria-label="Close menu"
-            >
-              <X size={24} />
-            </button>
-          </div>
+              {/* Header row */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
+                <span
+                  style={{
+                    fontFamily: '"Plus Jakarta Sans", sans-serif',
+                    fontSize: 'clamp(19px, 4.5vw, 22px)',
+                    fontWeight: 800,
+                    color: '#2563eb',
+                  }}
+                >
+                  Om.dev
+                </span>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#2563eb',
+                    padding: 4,
+                  }}
+                  aria-label="Close menu"
+                >
+                  <X size={24} />
+                </button>
+              </div>
 
-          {/* Links list */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 32, alignItems: 'center', flex: 1, justifyContent: 'center' }}>
-            {navLinks.map((link, idx) => (
-              <a
-                key={link.id}
-                href={link.href}
-                onClick={(e) => handleLinkClick(e, link.href)}
+              {/* Links list */}
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                variants={{
+                  visible: { transition: { staggerChildren: 0.06, delayChildren: 0.08 } },
+                  hidden: { transition: { staggerChildren: 0.04, staggerDirection: -1 } },
+                }}
+                style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+              >
+                {navLinks.map((link) => (
+                  <motion.a
+                    key={link.id}
+                    href={link.href}
+                    onClick={(e) => handleLinkClick(e, link.href)}
+                    variants={{
+                      hidden: { opacity: 0, x: 16 },
+                      visible: { opacity: 1, x: 0 },
+                    }}
+                    transition={{ duration: 0.2, ease: 'easeOut' }}
+                    style={{
+                      fontFamily: '"Plus Jakarta Sans", sans-serif',
+                      fontSize: 'clamp(18px, 6vw, 22px)',
+                      fontWeight: 700,
+                      color: activeSection === link.id ? '#2563eb' : '#0f172a',
+                      textDecoration: 'none',
+                      padding: '10px 0',
+                      borderBottom: '1px solid rgba(15, 23, 42, 0.06)',
+                    }}
+                  >
+                    {link.label}
+                  </motion.a>
+                ))}
+              </motion.div>
+
+              <motion.a
+                href="#contact"
+                onClick={(e) => handleLinkClick(e, '#contact')}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.22, delay: 0.15, ease: 'easeOut' }}
                 style={{
-                  fontFamily: '"Plus Jakarta Sans", sans-serif',
-                  fontSize: 24,
-                  fontWeight: 700,
-                  color: activeSection === link.id ? '#2563eb' : '#0f172a',
+                  background: '#2563eb',
+                  color: 'white',
+                  borderRadius: 999,
+                  padding: '12px 20px',
+                  fontSize: 'clamp(14px, 4vw, 16px)',
+                  fontWeight: 600,
                   textDecoration: 'none',
-                  animation: `float 4s ease-in-out ${idx * 0.1}s infinite`,
+                  marginTop: 'auto',
+                  marginBottom: 12,
+                  textAlign: 'center',
                 }}
               >
-                {link.label}
-              </a>
-            ))}
-            <a
-              href="#contact"
-              onClick={(e) => handleLinkClick(e, '#contact')}
-              style={{
-                background: '#2563eb',
-                color: 'white',
-                borderRadius: 999,
-                padding: '12px 36px',
-                fontSize: 16,
-                fontWeight: 600,
-                textDecoration: 'none',
-                marginTop: 16,
-              }}
-            >
-              Hire Me
-            </a>
-          </div>
-        </div>
-      )}
+                Hire Me
+              </motion.a>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

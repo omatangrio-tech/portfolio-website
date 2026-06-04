@@ -60,7 +60,7 @@ export default function Hero() {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        paddingTop: 140,
+        paddingTop: 'clamp(96px, 14vw, 140px)',
         overflow: 'hidden',
         background: '#f8fafc',
       }}
@@ -71,8 +71,8 @@ export default function Hero() {
           position: 'absolute',
           top: '10%',
           right: '-5%',
-          width: 400,
-          height: 400,
+          width: 'clamp(240px, 40vw, 400px)',
+          height: 'clamp(240px, 40vw, 400px)',
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%)',
           filter: 'blur(60px)',
@@ -85,8 +85,8 @@ export default function Hero() {
           position: 'absolute',
           bottom: '15%',
           left: '-5%',
-          width: 300,
-          height: 300,
+          width: 'clamp(190px, 30vw, 300px)',
+          height: 'clamp(190px, 30vw, 300px)',
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%)',
           filter: 'blur(60px)',
@@ -144,7 +144,7 @@ export default function Hero() {
             {/* H1 */}
             <h1
               style={{
-                fontSize: 'clamp(48px, 6.5vw, 88px)',
+                fontSize: 'clamp(38px, 10vw, 88px)',
                 fontWeight: 800,
                 lineHeight: 1.05,
                 color: '#0f172a',
@@ -161,10 +161,11 @@ export default function Hero() {
                 fontSize: 'clamp(18px, 2.2vw, 26px)',
                 color: '#475569',
                 fontWeight: 400,
-                minHeight: 36,
+                minHeight: 'clamp(30px, 7vw, 36px)',
                 marginTop: 16,
                 display: 'flex',
                 alignItems: 'center',
+                flexWrap: 'wrap',
               }}
             >
               <span>I am a&nbsp;</span>
@@ -190,9 +191,9 @@ export default function Hero() {
                 style={{
                   background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
                   color: 'white',
-                  padding: '14px 36px',
+                  padding: '12px clamp(18px, 6vw, 36px)',
                   borderRadius: 12,
-                  fontSize: 16,
+                  fontSize: 'clamp(14px, 3.6vw, 16px)',
                   fontWeight: 600,
                   border: 'none',
                   transition: 'all 0.2s',
@@ -215,9 +216,9 @@ export default function Hero() {
                   background: 'white',
                   border: '2px solid #2563eb',
                   color: '#2563eb',
-                  padding: '12px 34px',
+                  padding: '10px clamp(18px, 6vw, 34px)',
                   borderRadius: 12,
-                  fontSize: 16,
+                  fontSize: 'clamp(14px, 3.6vw, 16px)',
                   fontWeight: 600,
                   textDecoration: 'none',
                   display: 'inline-flex',
@@ -273,7 +274,7 @@ export default function Hero() {
                 background: 'white',
                 border: '1px solid var(--border)',
                 borderRadius: 16,
-                padding: '20px 24px',
+                padding: '20px clamp(16px, 4vw, 24px)',
                 boxShadow: 'var(--shadow-sm)',
                 animation: 'float 4s ease-in-out infinite',
               }}
@@ -335,7 +336,7 @@ export default function Hero() {
                 background: 'white',
                 border: '1px solid var(--border)',
                 borderRadius: 16,
-                padding: '20px 24px',
+                padding: '20px clamp(16px, 4vw, 24px)',
                 boxShadow: 'var(--shadow-sm)',
                 animation: 'float 4s ease-in-out 1s infinite',
               }}
@@ -366,7 +367,7 @@ export default function Hero() {
                 background: 'white',
                 border: '1px solid var(--border)',
                 borderRadius: 16,
-                padding: '20px 24px',
+                padding: '20px clamp(16px, 4vw, 24px)',
                 boxShadow: 'var(--shadow-sm)',
                 animation: 'float 4s ease-in-out 2s infinite',
               }}
@@ -418,7 +419,7 @@ export default function Hero() {
       {/* MARQUEE STRIP */}
       <div
         style={{
-          marginTop: 64,
+          marginTop: 'clamp(32px, 8vw, 64px)',
           background: 'white',
           borderTop: '1px solid var(--border)',
           borderBottom: '1px solid var(--border)',
