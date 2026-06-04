@@ -22,17 +22,38 @@ export default function Loader() {
           initial={{ y: 0 }}
           exit={{ y: '-100%' }}
           transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-          className="fixed inset-0 z-[100] bg-[#080c14] flex flex-col items-center justify-center pointer-events-none"
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 100000,
+            background: '#ffffff',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            pointerEvents: 'none',
+          }}
         >
-          <div className="flex flex-col items-center gap-6 w-full max-w-xs px-6">
-            <h1 className="text-cyan-400 font-heading text-4xl font-bold tracking-wider">
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24, width: '100%', maxWidth: 280, padding: '0 24px' }}>
+            <h1
+              style={{
+                color: '#2563eb',
+                fontFamily: '"Plus Jakarta Sans", sans-serif',
+                fontSize: 36,
+                fontWeight: 800,
+                letterSpacing: '0.05em',
+              }}
+            >
               Om.dev
             </h1>
-            
+
             {/* Progress Bar Container */}
-            <div className="w-full h-[2px] bg-white/10 rounded-full overflow-hidden">
+            <div style={{ width: '100%', height: 3, background: 'rgba(15,23,42,0.06)', borderRadius: 999, overflow: 'hidden' }}>
               <motion.div
-                className="h-full bg-cyan-400"
+                style={{
+                  height: '100%',
+                  background: 'linear-gradient(90deg, #2563eb, #f97316)',
+                }}
                 initial={{ width: '0%' }}
                 animate={{ width: '100%' }}
                 transition={{ duration: 1.5, ease: 'easeInOut' }}

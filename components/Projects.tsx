@@ -1,115 +1,278 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { Globe, Dumbbell, Utensils, FolderOpen, Github, ExternalLink } from 'lucide-react';
 import { projects } from '@/data/projects';
-import { ExternalLink, Github } from 'lucide-react';
-import { useEffect, useState } from 'react';
-
-const sectionVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { 
-      duration: 0.7, 
-      ease: [0.25, 0.46, 0.45, 0.94],
-      staggerChildren: 0.1
-    }
-  }
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }
-  }
-};
 
 export default function Projects() {
-  const [hasReducedMotion, setHasReducedMotion] = useState(false);
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setHasReducedMotion(mediaQuery.matches);
-  }, []);
+  // Helper to get custom top background gradient based on project ID/index
+  const getTopBg = (idx: number) => {
+    switch (idx) {
+      case 0:
+        return 'linear-gradient(135deg, #eff6ff, #f0fdf4)'; // Leansuite
+      case 1:
+        return 'linear-gradient(135deg, #fff7ed, #fdf4ff)'; // Gym
+      case 2:
+        return 'linear-gradient(135deg, #f0fdf4, #eff6ff)'; // Tiffin
+      default:
+        return 'linear-gradient(135deg, #f8fafc, #f1f5f9)';
+    }
+  };
+
+  // Helper to get project initials
+  const getInitials = (idx: number) => {
+    switch (idx) {
+      case 0:
+        return 'LS';
+      case 1:
+        return 'GYM';
+      case 2:
+        return 'TD';
+      default:
+        return 'PRJ';
+    }
+  };
+
+  // Helper to render matching icon
+  const renderIcon = (idx: number) => {
+    switch (idx) {
+      case 0:
+        return <Globe size={52} color="#2563eb" style={{ opacity: 0.7 }} />;
+      case 1:
+        return <Dumbbell size={52} color="#f97316" style={{ opacity: 0.7 }} />;
+      case 2:
+        return <Utensils size={52} color="#10b981" style={{ opacity: 0.7 }} />;
+      default:
+        return <FolderOpen size={52} color="#2563eb" style={{ opacity: 0.7 }} />;
+    }
+  };
 
   return (
-    <motion.section
+    <section
       id="projects"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
-      variants={hasReducedMotion ? {} : sectionVariants}
-      className="w-full py-24 bg-surface"
+      style={{
+        background: 'white',
+        padding: '100px 0',
+        position: 'relative',
+        zIndex: 1,
+      }}
     >
-      <div className="container mx-auto px-6 md:px-12 max-w-6xl">
-        <motion.div variants={cardVariants} className="mb-16">
-          <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4">
-            Featured <span className="text-cyan-400">Projects</span>
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: '0 auto',
+          padding: '0 clamp(24px, 5vw, 64px)',
+        }}
+      >
+        {/* Title */}
+        <div style={{ textAlign: 'center', marginBottom: 56 }}>
+          <h2
+            style={{
+              fontSize: 'clamp(36px, 5vw, 52px)',
+              fontWeight: 800,
+              color: '#0f172a',
+              lineHeight: 1.1,
+            }}
+          >
+            Featured <span className="gradient-text">Projects</span>
           </h2>
-          <div className="w-20 h-1 bg-cyan-400 rounded-full" />
-        </motion.div>
+          <p
+            style={{
+              color: '#94a3b8',
+              fontSize: 17,
+              marginTop: 12,
+            }}
+          >
+            A showcase of my recent development work
+          </p>
+        </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project) => (
-            <motion.div
-              key={project.id}
-              variants={cardVariants}
-              whileHover={hasReducedMotion ? {} : { y: -8 }}
-              className="group relative flex flex-col bg-background border border-white/10 rounded-2xl p-6 hover:shadow-[0_10px_30px_rgba(6,182,212,0.15)] hover:border-cyan-400/50 transition-all duration-300 overflow-hidden"
-            >
-              {/* Shimmer Effect */}
-              <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/5 to-transparent group-hover:animate-[shimmer_1.5s_infinite]" />
+        {/* Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {projects.map((project, idx) => {
+            const isHovered = hoveredIdx === idx;
+            const isComingSoon = idx === 1 || idx === 2;
 
-              <div className="flex justify-between items-start mb-6 relative z-10">
-                <div className="w-12 h-12 bg-cyan-400/10 text-cyan-400 rounded-xl flex items-center justify-center">
-                  <Code2Icon />
-                </div>
-                <div className="flex gap-4 text-gray-400">
-                  <a href={project.github} target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">
-                    <Github size={20} />
-                  </a>
-                  {project.liveDemo !== '#' && (
-                    <a href={project.liveDemo} target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">
-                      <ExternalLink size={20} />
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              <h3 className="text-xl font-bold text-white mb-3 relative z-10">{project.name}</h3>
-              <p className="text-gray-400 mb-6 flex-grow relative z-10 line-clamp-4">
-                {project.description}
-              </p>
-
-              <div className="flex flex-wrap gap-2 relative z-10 mt-auto pt-4 border-t border-white/5">
-                {project.tags.map((tag) => (
-                  <span key={tag} className="text-xs font-mono text-cyan-400 bg-cyan-400/10 px-2 py-1 rounded">
-                    {tag}
+            return (
+              <div
+                key={project.id}
+                onMouseEnter={() => setHoveredIdx(idx)}
+                onMouseLeave={() => setHoveredIdx(null)}
+                style={{
+                  background: 'white',
+                  border: '1px solid var(--border)',
+                  borderRadius: 20,
+                  overflow: 'hidden',
+                  boxShadow: isHovered ? 'var(--shadow-lg)' : 'var(--shadow-sm)',
+                  transform: isHovered ? 'translateY(-8px)' : 'translateY(0)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                {/* TOP AREA */}
+                <div
+                  style={{
+                    height: 200,
+                    background: getTopBg(idx),
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    position: 'relative',
+                    borderBottom: '1px solid var(--border)',
+                  }}
+                >
+                  {/* Faded Initials Text */}
+                  <span
+                    style={{
+                      position: 'absolute',
+                      fontFamily: '"Plus Jakarta Sans", sans-serif',
+                      fontSize: 80,
+                      fontWeight: 900,
+                      color: '#0f172a',
+                      opacity: 0.06,
+                      userSelect: 'none',
+                    }}
+                  >
+                    {getInitials(idx)}
                   </span>
-                ))}
+                  {/* Icon */}
+                  {renderIcon(idx)}
+                </div>
+
+                {/* CARD BODY */}
+                <div
+                  style={{
+                    padding: 24,
+                    flexGrow: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  {/* Top Row: FolderOpen + Badges/Links */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <FolderOpen size={22} color="#2563eb" />
+                    {isComingSoon && (
+                      <span
+                        style={{
+                          background: '#fff7ed',
+                          color: '#f97316',
+                          border: '1px solid rgba(249,115,22,0.2)',
+                          borderRadius: 999,
+                          fontSize: 11,
+                          padding: '3px 10px',
+                          fontWeight: 600,
+                        }}
+                      >
+                        Coming Soon
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Project Name */}
+                  <h3
+                    style={{
+                      fontFamily: '"Plus Jakarta Sans", sans-serif',
+                      fontSize: 20,
+                      fontWeight: 700,
+                      color: '#0f172a',
+                      marginTop: 14,
+                    }}
+                  >
+                    {project.name}
+                  </h3>
+
+                  {/* Description */}
+                  <p
+                    style={{
+                      fontSize: 14,
+                      color: '#475569',
+                      lineHeight: 1.75,
+                      marginTop: 8,
+                      flexGrow: 1,
+                    }}
+                  >
+                    {project.description}
+                  </p>
+
+                  {/* Tags */}
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 16 }}>
+                    {project.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        style={{
+                          background: 'rgba(37,99,235,0.06)',
+                          color: '#2563eb',
+                          border: '1px solid rgba(37,99,235,0.15)',
+                          borderRadius: 999,
+                          padding: '3px 12px',
+                          fontSize: 12,
+                          fontWeight: 500,
+                        }}
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Links Row */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 16,
+                      marginTop: 24,
+                      borderTop: '1px solid var(--border)',
+                      paddingTop: 16,
+                    }}
+                  >
+                    <a
+                      href={project.liveDemo}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        color: '#94a3b8',
+                        fontSize: 13,
+                        fontWeight: 600,
+                        textDecoration: 'none',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 4,
+                        transition: 'color 0.2s',
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = '#2563eb')}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}
+                    >
+                      Live Demo <ExternalLink size={14} />
+                    </a>
+                    <a
+                      href={project.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        color: '#94a3b8',
+                        fontSize: 13,
+                        fontWeight: 600,
+                        textDecoration: 'none',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 4,
+                        transition: 'color 0.2s',
+                      }}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = '#2563eb')}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}
+                    >
+                      GitHub <Github size={14} />
+                    </a>
+                  </div>
+                </div>
               </div>
-            </motion.div>
-          ))}
+            );
+          })}
         </div>
       </div>
-      
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes shimmer {
-          100% { transform: translateX(100%); }
-        }
-      `}} />
-    </motion.section>
-  );
-}
-
-function Code2Icon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="16 18 22 12 16 6"></polyline>
-      <polyline points="8 6 2 12 8 18"></polyline>
-    </svg>
+    </section>
   );
 }

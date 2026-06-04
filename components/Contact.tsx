@@ -1,28 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { supabase } from '@/lib/supabase';
 import { Mail, Phone, Linkedin, Github, Send } from 'lucide-react';
-
-const sectionVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.7, staggerChildren: 0.1 }
-  }
-};
-
-const childVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.5 } }
-};
+import { supabase } from '@/lib/supabase';
 
 export default function Contact() {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [focusedInput, setFocusedInput] = useState<string | null>(null);
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,191 +23,353 @@ export default function Contact() {
       setStatus('success');
       setFormData({ name: '', email: '', message: '' });
       setTimeout(() => setStatus('idle'), 5000);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
       setStatus('error');
+      setTimeout(() => setStatus('idle'), 5000);
     }
   };
 
-  const handleInputRipple = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const button = e.currentTarget;
-    const circle = document.createElement('span');
-    const diameter = Math.max(button.clientWidth, button.clientHeight);
-    const radius = diameter / 2;
-
-    circle.style.width = circle.style.height = `${diameter}px`;
-    circle.style.left = `${e.clientX - button.getBoundingClientRect().left - radius}px`;
-    circle.style.top = `${e.clientY - button.getBoundingClientRect().top - radius}px`;
-    circle.classList.add('ripple');
-
-    const ripple = button.getElementsByClassName('ripple')[0];
-    if (ripple) ripple.remove();
-
-    button.appendChild(circle);
-  };
+  const contactDetails = [
+    {
+      icon: <Mail size={20} />,
+      label: 'Email',
+      value: 'omatangrio@gmail.com',
+      href: 'mailto:omatangrio@gmail.com',
+    },
+    {
+      icon: <Phone size={20} />,
+      label: 'Phone',
+      value: '+91 6353826919',
+      href: 'tel:+916353826919',
+    },
+    {
+      icon: <Linkedin size={20} />,
+      label: 'LinkedIn',
+      value: 'patel-om-5b1804298',
+      href: 'https://www.linkedin.com/in/patel-om-5b1804298',
+    },
+    {
+      icon: <Github size={20} />,
+      label: 'GitHub',
+      value: 'ATeam-Learing',
+      href: 'https://github.com/ATeam-Learing',
+    },
+  ];
 
   return (
-    <motion.section
+    <section
       id="contact"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
-      variants={sectionVariants}
-      className="w-full py-24 bg-surface"
+      style={{
+        background: 'white',
+        padding: '100px 0',
+        position: 'relative',
+        zIndex: 1,
+      }}
     >
-      <div className="container mx-auto px-6 md:px-12 max-w-6xl">
-        <motion.div variants={childVariants} className="mb-16 text-center md:text-left">
-          <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4">
-            Get In <span className="text-cyan-400">Touch</span>
-          </h2>
-          <div className="w-20 h-1 bg-cyan-400 rounded-full mx-auto md:mx-0" />
-        </motion.div>
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: '0 auto',
+          padding: '0 clamp(24px, 5vw, 64px)',
+        }}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+          {/* Left Column: Get in touch & Contact cards */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
+            <div>
+              <h2
+                style={{
+                  fontSize: 40,
+                  fontWeight: 800,
+                  color: '#0f172a',
+                  fontFamily: '"Plus Jakarta Sans", sans-serif',
+                }}
+              >
+                Get In <span className="gradient-text">Touch</span>
+              </h2>
+              <p
+                style={{
+                  color: '#475569',
+                  fontSize: 17,
+                  marginTop: 12,
+                  lineHeight: 1.6,
+                }}
+              >
+                Have a project in mind? I'd love to hear from you.
+              </p>
+            </div>
 
-        <div className="grid md:grid-cols-2 gap-12 lg:gap-24">
-          
-          {/* Left: Contact Info */}
-          <div className="flex flex-col gap-8">
-            <motion.p variants={childVariants} className="text-xl text-gray-300 font-medium leading-relaxed">
-              Have a project in mind or want to collaborate? I'd love to hear from you.
-            </motion.p>
-            
-            <div className="flex flex-col gap-6">
-              {[
-                { icon: Mail, label: 'Email', value: 'omatangrio@gmail.com', href: 'mailto:omatangrio@gmail.com' },
-                { icon: Phone, label: 'Phone', value: '+91 6353826919', href: 'tel:+916353826919' },
-                { icon: Linkedin, label: 'LinkedIn', value: 'patel-om-9b8a6b33a', href: 'https://www.linkedin.com/in/patel-om-9b8a6b33a/' },
-                { icon: Github, label: 'GitHub', value: 'omatangrio-tech', href: 'https://github.com/omatangrio-tech' }
-              ].map((item, i) => (
-                <motion.a
-                  key={i}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variants={childVariants}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-background border border-white/5 hover:border-cyan-400/50 hover:bg-cyan-400/5 transition-all group"
-                >
-                  <div className="w-12 h-12 bg-surface-light rounded-lg flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
-                    <item.icon size={24} />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500 font-medium">{item.label}</p>
-                    <p className="text-white font-medium group-hover:text-cyan-400 transition-colors">{item.value}</p>
-                  </div>
-                </motion.a>
-              ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {contactDetails.map((item, idx) => {
+                const isHovered = hoveredCard === idx;
+                return (
+                  <a
+                    key={idx}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onMouseEnter={() => setHoveredCard(idx)}
+                    onMouseLeave={() => setHoveredCard(null)}
+                    style={{
+                      background: '#f8fafc',
+                      border: '1px solid var(--border)',
+                      borderRadius: 12,
+                      padding: '16px 20px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 16,
+                      textDecoration: 'none',
+                      transition: 'all 0.3s ease',
+                      transform: isHovered ? 'translateX(4px)' : 'translateX(0)',
+                      borderColor: isHovered ? 'var(--blue-border)' : 'var(--border)',
+                    }}
+                  >
+                    {/* Icon wrapper */}
+                    <div
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: '50%',
+                        background: '#eff6ff',
+                        color: '#2563eb',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      {item.icon}
+                    </div>
+
+                    <div>
+                      <div
+                        style={{
+                          fontSize: 11,
+                          textTransform: 'uppercase',
+                          color: '#94a3b8',
+                          fontWeight: 600,
+                          letterSpacing: '0.06em',
+                        }}
+                      >
+                        {item.label}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          color: '#0f172a',
+                          fontWeight: 500,
+                        }}
+                      >
+                        {item.value}
+                      </div>
+                    </div>
+                  </a>
+                );
+              })}
             </div>
           </div>
 
-          {/* Right: Contact Form */}
-          <motion.div variants={childVariants} className="bg-background p-8 rounded-2xl border border-white/10 shadow-2xl relative">
-            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-              
-              <div className="relative">
+          {/* Right Column: Form */}
+          <div>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+              {/* Name */}
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <label
+                  htmlFor="name"
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color: '#475569',
+                    marginBottom: 8,
+                  }}
+                >
+                  Your Name
+                </label>
                 <input
                   type="text"
-                  placeholder="Your Name"
+                  id="name"
                   required
+                  placeholder="John Doe"
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  onFocus={() => setFocusedInput('name')}
-                  onBlur={() => setFocusedInput(null)}
-                  className="w-full bg-surface-light border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 outline-none transition-colors focus:border-transparent"
-                />
-                <motion.div 
-                  initial={{ width: 0 }}
-                  animate={{ width: focusedInput === 'name' ? '100%' : 0 }}
-                  className="absolute bottom-0 left-0 h-0.5 bg-cyan-400 rounded-b-lg"
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  style={{
+                    background: 'white',
+                    border: '1.5px solid var(--border)',
+                    borderRadius: 12,
+                    height: 52,
+                    padding: '0 18px',
+                    fontSize: 15,
+                    outline: 'none',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = '#2563eb';
+                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.08)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--border)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                 />
               </div>
 
-              <div className="relative">
+              {/* Email */}
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <label
+                  htmlFor="email"
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color: '#475569',
+                    marginBottom: 8,
+                  }}
+                >
+                  Your Email
+                </label>
                 <input
                   type="email"
-                  placeholder="Your Email"
+                  id="email"
                   required
+                  placeholder="john@example.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  onFocus={() => setFocusedInput('email')}
-                  onBlur={() => setFocusedInput(null)}
-                  className="w-full bg-surface-light border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 outline-none transition-colors focus:border-transparent"
-                />
-                <motion.div 
-                  initial={{ width: 0 }}
-                  animate={{ width: focusedInput === 'email' ? '100%' : 0 }}
-                  className="absolute bottom-0 left-0 h-0.5 bg-cyan-400 rounded-b-lg"
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  style={{
+                    background: 'white',
+                    border: '1.5px solid var(--border)',
+                    borderRadius: 12,
+                    height: 52,
+                    padding: '0 18px',
+                    fontSize: 15,
+                    outline: 'none',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = '#2563eb';
+                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.08)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--border)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                 />
               </div>
 
-              <div className="relative">
+              {/* Message */}
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <label
+                  htmlFor="message"
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color: '#475569',
+                    marginBottom: 8,
+                  }}
+                >
+                  Your Message
+                </label>
                 <textarea
-                  placeholder="Your Message"
+                  id="message"
                   required
-                  rows={5}
+                  placeholder="Hello, I'd like to talk about..."
                   value={formData.message}
-                  onChange={(e) => setFormData({...formData, message: e.target.value})}
-                  onFocus={() => setFocusedInput('message')}
-                  onBlur={() => setFocusedInput(null)}
-                  className="w-full bg-surface-light border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 outline-none transition-colors focus:border-transparent resize-none"
-                />
-                <motion.div 
-                  initial={{ width: 0 }}
-                  animate={{ width: focusedInput === 'message' ? '100%' : 0 }}
-                  className="absolute bottom-0 left-0 h-0.5 bg-cyan-400 rounded-b-lg"
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  style={{
+                    background: 'white',
+                    border: '1.5px solid var(--border)',
+                    borderRadius: 12,
+                    minHeight: 160,
+                    padding: '16px 18px',
+                    fontSize: 15,
+                    outline: 'none',
+                    resize: 'none',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = '#2563eb';
+                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.08)';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--border)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
                 />
               </div>
 
+              {/* Submit */}
               <button
                 type="submit"
                 disabled={status === 'loading'}
-                onClick={handleInputRipple}
-                className="relative overflow-hidden w-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-4 rounded-lg flex justify-center items-center gap-2 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                style={{
+                  width: '100%',
+                  height: 56,
+                  background: 'linear-gradient(135deg,#2563eb,#1d4ed8)',
+                  color: 'white',
+                  fontSize: 16,
+                  fontWeight: 600,
+                  borderRadius: 12,
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 8,
+                  transition: 'all 0.2s ease',
+                  boxShadow: 'var(--shadow-blue)',
+                }}
+                onMouseEnter={(e) => {
+                  if (status !== 'loading') {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (status !== 'loading') {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                  }
+                }}
               >
-                <span className="relative z-10 flex items-center gap-2">
-                  {status === 'loading' ? 'Sending...' : 'Send Message'}
-                  <Send size={18} />
-                </span>
+                {status === 'loading' ? 'Sending...' : 'Send Message'}
+                <Send size={18} />
               </button>
 
+              {/* Success state */}
               {status === 'success' && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="p-3 bg-green-500/10 border border-green-500/20 text-green-400 rounded-lg text-center text-sm"
+                <div
+                  style={{
+                    padding: '16px 20px',
+                    background: '#10b981',
+                    color: 'white',
+                    borderRadius: 12,
+                    fontWeight: 600,
+                    fontSize: 15,
+                    textAlign: 'center',
+                    boxShadow: '0 4px 12px rgba(16,185,129,0.2)',
+                  }}
                 >
-                  Message sent successfully! I'll get back to you soon.
-                </motion.div>
+                  ✓ Message sent! I'll get back to you soon.
+                </div>
               )}
 
+              {/* Error state */}
               {status === 'error' && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-center text-sm"
+                <div
+                  style={{
+                    padding: '16px 20px',
+                    background: '#ef4444',
+                    color: 'white',
+                    borderRadius: 12,
+                    fontWeight: 600,
+                    fontSize: 15,
+                    textAlign: 'center',
+                    boxShadow: '0 4px 12px rgba(239,68,68,0.2)',
+                  }}
                 >
-                  Something went wrong. Please try again.
-                </motion.div>
+                  ✗ Something went wrong. Please try again.
+                </div>
               )}
-
             </form>
-          </motion.div>
+          </div>
         </div>
       </div>
-      
-      <style dangerouslySetInnerHTML={{__html: `
-        .ripple {
-          position: absolute;
-          border-radius: 50%;
-          transform: scale(0);
-          animation: ripple 0.6s linear;
-          background-color: rgba(255, 255, 255, 0.3);
-        }
-        @keyframes ripple {
-          to {
-            transform: scale(4);
-            opacity: 0;
-          }
-        }
-      `}} />
-    </motion.section>
+    </section>
   );
 }

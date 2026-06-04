@@ -1,23 +1,16 @@
-import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
-import "./globals.css";
-import LenisProvider from "@/lib/lenis";
-import Loader from "@/components/Loader";
-import CustomCursor from "@/components/CustomCursor";
-import ScrollProgress from "@/components/ScrollProgress";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import BackToTop from "@/components/BackToTop";
+import type { Metadata } from 'next';
+import './globals.css';
+import LenisProvider from '@/lib/lenis';
+import dynamic from 'next/dynamic';
+import ScrollProgress from '@/components/ScrollProgress';
+import BackToTop from '@/components/BackToTop';
+import Loader from '@/components/Loader';
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-});
+const CustomCursor = dynamic(() => import('@/components/CustomCursor'), { ssr: false });
 
 export const metadata: Metadata = {
-  title: "Patel Om | Frontend Developer",
-  description: "I'm Patel Om, a passionate Frontend Developer with 2.5 years of experience building modern, responsive web applications.",
+  title: 'Patel Om | Frontend Developer',
+  description: 'Frontend Developer specializing in React.js, Next.js, Angular and Ionic. Building modern web experiences.',
 };
 
 export default function RootLayout({
@@ -27,15 +20,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${spaceGrotesk.variable} antialiased bg-background text-white font-sans`}>
+      <body className="antialiased">
         <LenisProvider>
           <Loader />
           <CustomCursor />
           <ScrollProgress />
-          <Navbar />
-          {children}
-          <Footer />
           <BackToTop />
+          {children}
         </LenisProvider>
       </body>
     </html>

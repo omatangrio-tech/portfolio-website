@@ -1,24 +1,14 @@
-export interface Skill {
-  name: string;
-}
-
-export const skills: Skill[] = [
-  { name: "HTML" },
-  { name: "HTML5" },
-  { name: "CSS" },
-  { name: "JavaScript" },
-  { name: "TypeScript" },
-  { name: "React.js" },
-  { name: "Angular" },
-  { name: "Next.js" },
-  { name: "Ionic Framework" },
-  { name: "Web Development" },
-  { name: "Front-End Development" },
-  { name: "Front-End Design" },
-  { name: "Bootstrap" },
-  { name: "Tailwind CSS" },
-  { name: "Firebase" },
-  { name: "Supabase" },
-  { name: "GitHub" },
-  { name: "Vercel" }
+export const skills = [
+  { name: 'HTML / CSS', icon: '🌐', color: '#f97316' },
+  { name: 'JavaScript', icon: '⚡', color: '#f59e0b' },
+  { name: 'TypeScript', icon: '💎', color: '#2563eb' },
+  { name: 'React.js', icon: '⚛️', color: '#06b6d4' },
+  { name: 'Next.js', icon: '▲', color: '#0f172a' },
+  { name: 'Angular', icon: '🅰️', color: '#dc2626' },
+  { name: 'Ionic Framework', icon: '📱', color: '#3b82f6' },
+  { name: 'Tailwind CSS', icon: '🎨', color: '#06b6d4' },
+  { name: 'Firebase', icon: '🔥', color: '#f97316' },
+  { name: 'Supabase', icon: '🟢', color: '#10b981' },
+  { name: 'GitHub', icon: '🐙', color: '#0f172a' },
+  { name: 'Vercel', icon: '▲', color: '#0f172a' },
 ];

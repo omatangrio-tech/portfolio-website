@@ -1,152 +1,200 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 
-const sectionVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { 
-      duration: 0.7, 
-      ease: [0.25, 0.46, 0.45, 0.94],
-      staggerChildren: 0.1
-    }
-  }
-};
+interface StatCardProps {
+  target: number;
+  label: string;
+  suffix?: string;
+}
 
-const childVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] } }
-};
-
-function CountUp({ end, duration = 2, suffix = '' }: { end: number, duration?: number, suffix?: string }) {
+function StatCard({ target, label, suffix = '+' }: StatCardProps) {
   const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const hasStarted = useRef(false);
 
   useEffect(() => {
-    if (!isInView) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasStarted.current) {
+            hasStarted.current = true;
+            const duration = 1800; // 1.8 seconds
+            const steps = 60;
+            const stepTime = duration / steps;
+            const increment = target / steps;
+            let current = 0;
 
-    let startTime: number;
-    let animationFrame: number;
+            const interval = setInterval(() => {
+              current += increment;
+              if (current >= target) {
+                setCount(target);
+                clearInterval(interval);
+              } else {
+                setCount(current);
+              }
+            }, stepTime);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
 
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = timestamp - startTime;
-      const percentage = Math.min(progress / (duration * 1000), 1);
-      
-      // Easing out function
-      const easeOutQuart = 1 - Math.pow(1 - percentage, 4);
-      
-      setCount(Number((easeOutQuart * end).toFixed(1)));
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
 
-      if (percentage < 1) {
-        animationFrame = requestAnimationFrame(animate);
-      } else {
-        setCount(end); // Ensure we end exactly on the target
-      }
-    };
+    return () => observer.disconnect();
+  }, [target]);
 
-    animationFrame = requestAnimationFrame(animate);
-
-    return () => cancelAnimationFrame(animationFrame);
-  }, [end, duration, isInView]);
+  const formattedCount = count % 1 === 0 ? count.toFixed(0) : count.toFixed(1);
 
   return (
-    <span ref={ref}>
-      {count % 1 === 0 ? count : count.toFixed(1)}
-      {suffix}
-    </span>
+    <div
+      ref={containerRef}
+      style={{
+        background: '#f8fafc',
+        border: '1px solid var(--border)',
+        borderRadius: 16,
+        padding: '24px 16px',
+        textAlign: 'center',
+        transition: 'all 0.3s ease',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = 'var(--blue-border)';
+        e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+        e.currentTarget.style.transform = 'translateY(-3px)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = 'var(--border)';
+        e.currentTarget.style.boxShadow = 'none';
+        e.currentTarget.style.transform = 'translateY(0)';
+      }}
+    >
+      <span className="gradient-text" style={{ fontSize: 40, fontWeight: 800, display: 'block', marginBottom: 8 }}>
+        {formattedCount}
+        {suffix}
+      </span>
+      <span
+        style={{
+          fontSize: 12,
+          color: '#94a3b8',
+          textTransform: 'uppercase',
+          letterSpacing: '0.06em',
+          fontWeight: 600,
+        }}
+      >
+        {label}
+      </span>
+    </div>
   );
 }
 
 export default function About() {
-  const [hasReducedMotion, setHasReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setHasReducedMotion(mediaQuery.matches);
-  }, []);
-
   return (
-    <motion.section
+    <section
       id="about"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
-      variants={hasReducedMotion ? {} : sectionVariants}
-      className="w-full py-24 bg-surface"
+      style={{
+        background: 'white',
+        padding: '100px 0',
+        position: 'relative',
+        zIndex: 1,
+      }}
     >
-      <div className="container mx-auto px-6 md:px-12 max-w-6xl">
-        <motion.div variants={childVariants} className="mb-12">
-          <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4">
-            About <span className="text-cyan-400">Me</span>
-          </h2>
-          <div className="w-20 h-1 bg-cyan-400 rounded-full" />
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Left: Image */}
-          <motion.div 
-            variants={childVariants}
-            className="relative flex justify-center"
-          >
-            <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full p-2">
-              {/* Rotating Dashed Ring */}
-              <div className="absolute inset-0 rounded-full border-2 border-dashed border-cyan-400/50 animate-[spin_12s_linear_infinite]" />
-              
-              {/* Image Container with Glow */}
-              <motion.div 
-                initial={{ scale: 0.8, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ type: "spring", stiffness: 100, damping: 15 }}
-                className="relative w-full h-full rounded-full overflow-hidden border-2 border-cyan-400 shadow-[0_0_30px_rgba(6,182,212,0.3)] bg-background-light"
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: '0 auto',
+          padding: '0 clamp(24px, 5vw, 64px)',
+        }}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+          {/* Left Column - Photo */}
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div
+              style={{
+                position: 'relative',
+                width: 320,
+                height: 400,
+              }}
+            >
+              {/* Decorative spinning dashed ring */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: -16,
+                  border: '2px dashed rgba(37, 99, 235, 0.15)',
+                  borderRadius: '50%',
+                  animation: 'spin-slow 20s linear infinite',
+                  pointerEvents: 'none',
+                }}
+              />
+              <div
+                style={{
+                  position: 'relative',
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: 20,
+                  overflow: 'hidden',
+                  border: '3px solid rgba(37, 99, 235, 0.15)',
+                  boxShadow: 'var(--shadow-lg)',
+                }}
               >
                 <Image
                   src="/images/patel-om-concert.png"
                   alt="Patel Om"
                   fill
-                  className="object-cover"
+                  style={{ objectFit: 'cover' }}
+                  priority
                 />
-              </motion.div>
+              </div>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Right: Text & Stats */}
-          <motion.div variants={childVariants} className="flex flex-col gap-8">
-            <p className="text-lg text-gray-300 leading-relaxed font-sans">
-              I'm <span className="text-white font-semibold">Patel Om</span>, a passionate Frontend Developer with 2.5 years of experience building modern, responsive web applications. I specialize in React.js, Next.js, Angular, and Ionic Framework, and love crafting pixel-perfect UIs that deliver great user experiences.
+          {/* Right Column - Text Bio */}
+          <div>
+            <h2
+              style={{
+                fontSize: 'clamp(36px, 5vw, 52px)',
+                fontWeight: 800,
+                color: '#0f172a',
+                lineHeight: 1.1,
+              }}
+            >
+              About <span className="gradient-text">Me</span>
+            </h2>
+            <div
+              style={{
+                width: 56,
+                height: 3,
+                background: 'linear-gradient(90deg, #2563eb, #f97316)',
+                margin: '12px 0 24px',
+              }}
+            />
+            <p
+              style={{
+                fontSize: 17,
+                lineHeight: 1.9,
+                color: '#475569',
+                marginBottom: 32,
+              }}
+            >
+              I'm Patel Om, a passionate Frontend Developer with 2.5 years of experience building modern, responsive
+              web applications. I specialize in React.js, Next.js, Angular, and Ionic Framework, and love crafting
+              pixel-perfect UIs that deliver great user experiences. I focus on writing clean, maintainable code,
+              collaborating with design and backend teams, and bringing ideas to life with high performance.
             </p>
 
             {/* Stats Row */}
-            <div className="grid grid-cols-3 gap-6 pt-6 border-t border-white/10">
-              <div className="flex flex-col">
-                <span className="text-3xl font-bold text-cyan-400 mb-2">
-                  <CountUp end={2.5} suffix="+" />
-                </span>
-                <span className="text-sm text-gray-400 uppercase tracking-wider">Years Exp</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-3xl font-bold text-cyan-400 mb-2">
-                  <CountUp end={3} suffix="+" />
-                </span>
-                <span className="text-sm text-gray-400 uppercase tracking-wider">Projects</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="text-3xl font-bold text-cyan-400 mb-2">
-                  <CountUp end={10} suffix="+" />
-                </span>
-                <span className="text-sm text-gray-400 uppercase tracking-wider">Techs</span>
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <StatCard target={2.5} label="Years Exp" />
+              <StatCard target={3} label="Projects" />
+              <StatCard target={10} label="Techs" />
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }

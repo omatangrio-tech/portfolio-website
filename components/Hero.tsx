@@ -1,146 +1,475 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { motion, useAnimation } from 'framer-motion';
-import { ArrowDown } from 'lucide-react';
-import Image from 'next/image';
-
-const titles = ["Frontend Developer", "React & Next.js Developer", "Angular & Ionic Developer"];
+import { useEffect, useState } from 'react';
+import { Github, Linkedin, ArrowUpRight } from 'lucide-react';
 
 export default function Hero() {
-  const [titleIndex, setTitleIndex] = useState(0);
-  const [displayText, setDisplayText] = useState('');
+  const [typedText, setTypedText] = useState('');
+  const roles = ['Frontend Developer', 'React & Next.js Developer', 'Angular & Ionic Developer'];
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
-  
+
   // Typewriter effect
   useEffect(() => {
-    const currentTitle = titles[titleIndex];
-    let timeout: NodeJS.Timeout;
+    const currentRole = roles[roleIndex];
+    let timer: NodeJS.Timeout;
 
-    if (!isDeleting && displayText === currentTitle) {
-      // Pause at end of typing
-      timeout = setTimeout(() => setIsDeleting(true), 1500);
-    } else if (isDeleting && displayText === '') {
-      // Move to next word
-      setIsDeleting(false);
-      setTitleIndex((prev) => (prev + 1) % titles.length);
+    if (!isDeleting) {
+      if (charIndex < currentRole.length) {
+        timer = setTimeout(() => {
+          setTypedText((prev) => prev + currentRole.charAt(charIndex));
+          setCharIndex((prev) => prev + 1);
+        }, 80);
+      } else {
+        // Pause at completion
+        timer = setTimeout(() => {
+          setIsDeleting(true);
+        }, 1800);
+      }
     } else {
-      // Typing/Deleting speed
-      const speed = isDeleting ? 40 : 80;
-      timeout = setTimeout(() => {
-        setDisplayText(currentTitle.substring(0, displayText.length + (isDeleting ? -1 : 1)));
-      }, speed);
+      if (charIndex > 0) {
+        timer = setTimeout(() => {
+          setTypedText((prev) => prev.slice(0, -1));
+          setCharIndex((prev) => prev - 1);
+        }, 45);
+      } else {
+        // Finished deleting, move to next role
+        setIsDeleting(false);
+        setRoleIndex((prev) => (prev + 1) % roles.length);
+        timer = setTimeout(() => {}, 300);
+      }
     }
 
-    return () => clearTimeout(timeout);
-  }, [displayText, isDeleting, titleIndex]);
+    return () => clearTimeout(timer);
+  }, [charIndex, isDeleting, roleIndex]);
 
-  // Magnetic button effect
-  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-    const target = e.currentTarget;
-    const rect = target.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    
-    // Max offset 8px
-    const offsetX = (x / rect.width) * 16;
-    const offsetY = (y / rect.height) * 16;
-
-    target.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+  const handleScrollToSection = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
   };
-
-  const handleMouseLeave = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-    const target = e.currentTarget;
-    target.style.transform = 'translate(0px, 0px)';
-  };
-
-  const headingText = "Hi, I'm Patel Om 👋".split(" ");
 
   return (
-    <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden pt-20">
-      {/* Animated Background */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-cyan-400/10 rounded-full blur-[120px] animate-[float_6s_ease-in-out_infinite]" />
-        <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-indigo-500/10 rounded-full blur-[100px] animate-[float_8s_ease-in-out_infinite_reverse]" />
-        
-        {/* Subtle grid pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]" />
-      </div>
+    <section
+      id="home"
+      style={{
+        position: 'relative',
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        paddingTop: 140,
+        overflow: 'hidden',
+        background: '#f8fafc',
+      }}
+    >
+      {/* Decorative BG elements */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '10%',
+          right: '-5%',
+          width: 400,
+          height: 400,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%)',
+          filter: 'blur(60px)',
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '15%',
+          left: '-5%',
+          width: 300,
+          height: 300,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 70%)',
+          filter: 'blur(60px)',
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: 'radial-gradient(circle, rgba(15,23,42,0.06) 1px, transparent 1px)',
+          backgroundSize: '28px 28px',
+          zIndex: 0,
+          pointerEvents: 'none',
+        }}
+      />
 
-      <div className="container relative z-10 mx-auto px-6 flex flex-col items-center text-center">
-        <h1 className="text-5xl md:text-7xl font-bold font-heading mb-6 flex flex-wrap justify-center gap-x-4">
-          {headingText.map((word, i) => (
-            <motion.span
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 * i, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-            >
-              {word}
-            </motion.span>
-          ))}
-        </h1>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.8 }}
-          className="h-12 mb-10"
-        >
-          <span className="text-2xl md:text-3xl text-gray-400 font-medium">
-            {displayText}
-            <span className="animate-pulse text-cyan-400">|</span>
-          </span>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1, duration: 0.6 }}
-          className="flex flex-col sm:flex-row gap-6 items-center"
-        >
-          <a
-            href="#projects"
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            className="px-8 py-4 bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-full transition-colors duration-300 ease-out flex items-center gap-2 will-change-transform"
-          >
-            View My Work
-          </a>
-          <a
-            href="/resume.pdf"
-            download
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            className="px-8 py-4 bg-transparent border border-white/20 hover:border-cyan-400 hover:text-cyan-400 font-semibold rounded-full transition-colors duration-300 ease-out will-change-transform"
-          >
-            Download CV
-          </a>
-        </motion.div>
-      </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 1 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-gray-500"
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: '0 auto',
+          padding: '0 clamp(24px, 5vw, 64px)',
+          width: '100%',
+          zIndex: 1,
+          flexGrow: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+        }}
       >
-        <span className="text-sm tracking-widest uppercase text-white/50">Scroll</span>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <ArrowDown className="w-5 h-5 text-cyan-400" />
-        </motion.div>
-      </motion.div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          {/* LEFT COL (55%) */}
+          <div className="lg:col-span-7 flex flex-col items-start">
+            {/* Badge */}
+            <div
+              style={{
+                border: '1px solid rgba(37,99,235,0.25)',
+                background: 'rgba(37,99,235,0.06)',
+                color: '#2563eb',
+                borderRadius: 999,
+                padding: '6px 18px',
+                fontSize: 13,
+                fontWeight: 600,
+                marginBottom: 24,
+                animation: 'badge-pulse 2.5s ease infinite',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
+              }}
+            >
+              <span>✦</span> Available for Freelance
+            </div>
 
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes float {
-          0%, 100% { transform: translateY(0) scale(1); }
-          50% { transform: translateY(-30px) scale(1.05); }
-        }
-      `}} />
+            {/* H1 */}
+            <h1
+              style={{
+                fontSize: 'clamp(48px, 6.5vw, 88px)',
+                fontWeight: 800,
+                lineHeight: 1.05,
+                color: '#0f172a',
+                letterSpacing: '-0.03em',
+              }}
+            >
+              Hi, I'm <br />
+              <span className="gradient-text">Patel Om</span>
+            </h1>
+
+            {/* Subtitle */}
+            <div
+              style={{
+                fontSize: 'clamp(18px, 2.2vw, 26px)',
+                color: '#475569',
+                fontWeight: 400,
+                minHeight: 36,
+                marginTop: 16,
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <span>I am a&nbsp;</span>
+              <span style={{ fontWeight: 600, color: '#2563eb', borderRight: '2px solid #2563eb' }}>
+                {typedText}
+              </span>
+            </div>
+
+            {/* Divider */}
+            <div
+              style={{
+                width: 100,
+                height: 2,
+                background: 'linear-gradient(90deg, #2563eb, #f97316)',
+                margin: '24px 0',
+              }}
+            />
+
+            {/* Buttons Row */}
+            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 8 }}>
+              <button
+                onClick={() => handleScrollToSection('projects')}
+                style={{
+                  background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+                  color: 'white',
+                  padding: '14px 36px',
+                  borderRadius: 12,
+                  fontSize: 16,
+                  fontWeight: 600,
+                  border: 'none',
+                  transition: 'all 0.2s',
+                  boxShadow: '0 8px 32px rgba(37,99,235,0.18)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                View My Work
+              </button>
+              <a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  background: 'white',
+                  border: '2px solid #2563eb',
+                  color: '#2563eb',
+                  padding: '12px 34px',
+                  borderRadius: 12,
+                  fontSize: 16,
+                  fontWeight: 600,
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = '#2563eb';
+                  e.currentTarget.style.color = 'white';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'white';
+                  e.currentTarget.style.color = '#2563eb';
+                }}
+              >
+                Download CV
+              </a>
+            </div>
+
+            {/* Social Links */}
+            <div style={{ display: 'flex', gap: 16, marginTop: 32 }}>
+              <a
+                href="https://github.com/ATeam-Learing"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+                style={{ color: '#94a3b8', transition: 'color 0.2s' }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#2563eb')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}
+              >
+                <Github size={22} />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/patel-om-5b1804298"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                style={{ color: '#94a3b8', transition: 'color 0.2s' }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#2563eb')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}
+              >
+                <Linkedin size={22} />
+              </a>
+            </div>
+          </div>
+
+          {/* RIGHT COL (45%) */}
+          <div className="lg:col-span-5 flex flex-col gap-6 relative" style={{ zIndex: 2 }}>
+            {/* Card 1 - Currently Building */}
+            <div
+              style={{
+                background: 'white',
+                border: '1px solid var(--border)',
+                borderRadius: 16,
+                padding: '20px 24px',
+                boxShadow: 'var(--shadow-sm)',
+                animation: 'float 4s ease-in-out infinite',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+                <span
+                  style={{
+                    width: 8,
+                    height: 8,
+                    background: '#10b981',
+                    borderRadius: '50%',
+                    animation: 'pulse-dot 2s infinite',
+                  }}
+                />
+                <span style={{ fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#94a3b8' }}>
+                  Live Project
+                </span>
+              </div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#0f172a' }}>The Leansuite</div>
+              <a
+                href="https://theleansuite.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  fontSize: 13,
+                  color: '#2563eb',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 4,
+                  marginTop: 4,
+                }}
+              >
+                theleansuite.com <ArrowUpRight size={14} />
+              </a>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 12 }}>
+                {['Next.js', 'TypeScript', 'Angular'].map((t) => (
+                  <span
+                    key={t}
+                    style={{
+                      background: '#eff6ff',
+                      color: '#2563eb',
+                      border: '1px solid rgba(37,99,235,0.2)',
+                      borderRadius: 999,
+                      fontSize: 11,
+                      padding: '3px 10px',
+                      fontWeight: 500,
+                    }}
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Card 2 - Quick Stats */}
+            <div
+              style={{
+                background: 'white',
+                border: '1px solid var(--border)',
+                borderRadius: 16,
+                padding: '20px 24px',
+                boxShadow: 'var(--shadow-sm)',
+                animation: 'float 4s ease-in-out 1s infinite',
+              }}
+            >
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="gradient-text" style={{ fontSize: 28, fontWeight: 800 }}>2.5+</div>
+                  <div style={{ fontSize: 12, color: '#475569', fontWeight: 500 }}>Years Exp</div>
+                </div>
+                <div>
+                  <div className="gradient-text" style={{ fontSize: 28, fontWeight: 800 }}>3+</div>
+                  <div style={{ fontSize: 12, color: '#475569', fontWeight: 500 }}>Projects</div>
+                </div>
+                <div>
+                  <div className="gradient-text" style={{ fontSize: 28, fontWeight: 800 }}>10+</div>
+                  <div style={{ fontSize: 12, color: '#475569', fontWeight: 500 }}>Technologies</div>
+                </div>
+                <div>
+                  <div className="gradient-text" style={{ fontSize: 28, fontWeight: 800 }}>100%</div>
+                  <div style={{ fontSize: 12, color: '#475569', fontWeight: 500 }}>Passion</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 3 - Tech Stack badges */}
+            <div
+              style={{
+                background: 'white',
+                border: '1px solid var(--border)',
+                borderRadius: 16,
+                padding: '20px 24px',
+                boxShadow: 'var(--shadow-sm)',
+                animation: 'float 4s ease-in-out 2s infinite',
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 11,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  color: '#94a3b8',
+                  fontWeight: 600,
+                  marginBottom: 12,
+                }}
+              >
+                My Stack
+              </div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {['⚛️ React', '▲ Next.js', '🅰️ Angular', '📱 Ionic', '🔷 TypeScript', '🔥 Firebase'].map((badge) => (
+                  <div
+                    key={badge}
+                    style={{
+                      background: '#f8fafc',
+                      border: '1px solid var(--border)',
+                      borderRadius: 8,
+                      padding: '6px 12px',
+                      fontSize: 12,
+                      color: '#475569',
+                      fontWeight: 500,
+                      transition: 'all 0.2s',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(37,99,235,0.25)';
+                      e.currentTarget.style.color = '#2563eb';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--border)';
+                      e.currentTarget.style.color = '#475569';
+                    }}
+                  >
+                    {badge}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* MARQUEE STRIP */}
+      <div
+        style={{
+          marginTop: 64,
+          background: 'white',
+          borderTop: '1px solid var(--border)',
+          borderBottom: '1px solid var(--border)',
+          padding: '14px 0',
+          overflow: 'hidden',
+          width: '100%',
+          position: 'relative',
+          zIndex: 1,
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            width: '300%',
+            animation: 'marquee 26s linear infinite',
+            whiteSpace: 'nowrap',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.animationPlayState = 'paused';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.animationPlayState = 'running';
+          }}
+        >
+          {Array(3)
+            .fill(
+              'React.js ✦ Next.js ✦ TypeScript ✦ Angular ✦ Ionic ✦ Tailwind CSS ✦ Firebase ✦ Supabase ✦ GitHub ✦ Vercel ✦ '
+            )
+            .map((text, idx) => (
+              <span
+                key={idx}
+                style={{
+                  fontSize: 13,
+                  color: '#94a3b8',
+                  letterSpacing: '0.06em',
+                  fontWeight: 500,
+                }}
+              >
+                {text.split('✦').map((word: string, wIdx: number) => {
+                  if (word.trim() === '') return null;
+                  return (
+                    <span key={wIdx}>
+                      {word}
+                      <span style={{ color: '#2563eb', margin: '0 10px' }}>✦</span>
+                    </span>
+                  );
+                })}
+              </span>
+            ))}
+        </div>
+      </div>
     </section>
   );
 }

@@ -1,142 +1,287 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import Link from 'next/link';
-
-const navLinks = [
-  { name: 'About', href: '#about' },
-  { name: 'Skills', href: '#skills' },
-  { name: 'Projects', href: '#projects' },
-  { name: 'Experience', href: '#experience' },
-  { name: 'Contact', href: '#contact' },
-];
 
 export default function Navbar() {
-  const [activeSection, setActiveSection] = useState('');
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navLinks = [
+    { label: 'Home', href: '#home', id: 'home' },
+    { label: 'About', href: '#about', id: 'about' },
+    { label: 'Skills', href: '#skills', id: 'skills' },
+    { label: 'Projects', href: '#projects', id: 'projects' },
+    { label: 'Experience', href: '#experience', id: 'experience' },
+    { label: 'Contact', href: '#contact', id: 'contact' },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-
-      // Check active section
-      const sections = navLinks.map(link => document.querySelector(link.href) as HTMLElement);
-      
-      let current = '';
-      for (const section of sections) {
-        if (section) {
-          const sectionTop = section.offsetTop;
-          // Trigger when section is in middle of viewport
-          if (scrollY >= sectionTop - window.innerHeight / 3) {
-            current = `#${section.getAttribute('id')}`;
-          }
-        }
-      }
-      if (current) {
-        setActiveSection(current);
+      if (window.scrollY > 80) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
       }
     };
 
     window.addEventListener('scroll', handleScroll);
-    // Trigger once on mount
-    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    setIsMobileMenuOpen(false);
-    
-    const element = document.querySelector(href);
-    if (element) {
-      // Offset for fixed navbar
-      const top = element.getBoundingClientRect().top + window.scrollY - 80;
-      window.scrollTo({
-        top,
-        behavior: 'smooth'
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0,
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
       });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    navLinks.forEach((link) => {
+      const el = document.getElementById(link.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => {
+      navLinks.forEach((link) => {
+        const el = document.getElementById(link.id);
+        if (el) observer.unobserve(el);
+      });
+    };
+  }, []);
+
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setMobileMenuOpen(false);
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
+  const navStyle: React.CSSProperties = scrolled
+    ? {
+        position: 'fixed',
+        top: 16,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 'min(880px, 92vw)',
+        background: 'rgba(255, 255, 255, 0.92)',
+        backdropFilter: 'blur(20px) saturate(180%)',
+        border: '1px solid rgba(37, 99, 235, 0.15)',
+        borderRadius: 9999,
+        padding: '12px 32px',
+        boxShadow: '0 4px 24px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5)',
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        zIndex: 999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }
+    : {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        background: 'white',
+        borderBottom: '1px solid var(--border)',
+        padding: '16px clamp(24px, 5vw, 64px)',
+        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+        zIndex: 999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      };
+
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-background/70 backdrop-blur-md border-b border-white/5 py-4'
-          : 'bg-transparent py-6'
-      }`}
-    >
-      <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
-        <a 
-          href="#" 
-          onClick={(e) => { e.preventDefault(); window.scrollTo({top: 0, behavior: 'smooth'}); }}
-          className="text-2xl font-heading font-bold text-white relative group"
+    <>
+      <nav style={navStyle}>
+        {/* Logo */}
+        <a
+          href="#home"
+          onClick={(e) => handleLinkClick(e, '#home')}
+          style={{
+            fontFamily: '"Plus Jakarta Sans", sans-serif',
+            fontSize: 22,
+            fontWeight: 800,
+            color: '#2563eb',
+            textDecoration: 'none',
+          }}
         >
-          Om<span className="text-cyan-400">.dev</span>
-          <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-cyan-400 transition-all duration-300 group-hover:w-full"></span>
+          Om.dev
         </a>
 
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              onClick={(e) => handleClick(e, link.href)}
-              className={`relative text-sm font-medium transition-colors hover:text-cyan-400 ${
-                activeSection === link.href ? 'text-cyan-400' : 'text-gray-300'
-              }`}
-            >
-              {link.name}
-              {activeSection === link.href && (
-                <motion.div
-                  layoutId="activeNavIndicator"
-                  className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-cyan-400 rounded-full"
-                  transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                />
-              )}
-            </a>
-          ))}
+        {/* Links - Desktop */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: scrolled ? 36 : 24 }} className="hidden md:flex">
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.id;
+            return (
+              <a
+                key={link.id}
+                href={link.href}
+                onClick={(e) => handleLinkClick(e, link.href)}
+                style={{
+                  fontFamily: '"DM Sans", sans-serif',
+                  fontSize: 14,
+                  fontWeight: isActive ? 600 : 500,
+                  color: isActive ? '#2563eb' : '#475569',
+                  textDecoration: 'none',
+                  position: 'relative',
+                  transition: 'color 0.2s',
+                  padding: '4px 0',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) e.currentTarget.style.color = '#2563eb';
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) e.currentTarget.style.color = '#475569';
+                }}
+              >
+                {link.label}
+                {isActive && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      bottom: -2,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: 4,
+                      height: 4,
+                      borderRadius: '50%',
+                      background: '#2563eb',
+                    }}
+                  />
+                )}
+              </a>
+            );
+          })}
         </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden text-gray-300 hover:text-cyan-400 transition-colors"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X /> : <Menu />}
-        </button>
-      </div>
-
-      {/* Mobile Nav Drawer */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="md:hidden bg-background-light/95 backdrop-blur-xl border-b border-white/10 overflow-hidden"
+        {/* Action Button - Desktop */}
+        <div className="hidden md:block">
+          <a
+            href="#contact"
+            onClick={(e) => handleLinkClick(e, '#contact')}
+            style={{
+              background: '#2563eb',
+              color: 'white',
+              borderRadius: 999,
+              padding: '9px 24px',
+              fontSize: 13,
+              fontWeight: 600,
+              textDecoration: 'none',
+              transition: 'background 0.2s',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = '#1d4ed8')}
+            onMouseLeave={(e) => (e.currentTarget.style.background = '#2563eb')}
           >
-            <div className="flex flex-col items-center gap-6 py-8">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={(e) => handleClick(e, link.href)}
-                  className={`text-lg font-medium ${
-                    activeSection === link.href ? 'text-cyan-400' : 'text-gray-300'
-                  }`}
-                >
-                  {link.name}
-                </a>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
+            Hire Me
+          </a>
+        </div>
+
+        {/* Hamburger - Mobile */}
+        <button
+          onClick={() => setMobileMenuOpen(true)}
+          className="md:hidden"
+          style={{
+            background: 'none',
+            border: 'none',
+            color: '#2563eb',
+            padding: 4,
+          }}
+          aria-label="Open menu"
+        >
+          <Menu size={22} />
+        </button>
+      </nav>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'white',
+            zIndex: 1000,
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '24px clamp(24px, 5vw, 64px)',
+          }}
+        >
+          {/* Header row */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 64 }}>
+            <span
+              style={{
+                fontFamily: '"Plus Jakarta Sans", sans-serif',
+                fontSize: 22,
+                fontWeight: 800,
+                color: '#2563eb',
+              }}
+            >
+              Om.dev
+            </span>
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#2563eb',
+                padding: 4,
+              }}
+              aria-label="Close menu"
+            >
+              <X size={24} />
+            </button>
+          </div>
+
+          {/* Links list */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 32, alignItems: 'center', flex: 1, justifyContent: 'center' }}>
+            {navLinks.map((link, idx) => (
+              <a
+                key={link.id}
+                href={link.href}
+                onClick={(e) => handleLinkClick(e, link.href)}
+                style={{
+                  fontFamily: '"Plus Jakarta Sans", sans-serif',
+                  fontSize: 24,
+                  fontWeight: 700,
+                  color: activeSection === link.id ? '#2563eb' : '#0f172a',
+                  textDecoration: 'none',
+                  animation: `float 4s ease-in-out ${idx * 0.1}s infinite`,
+                }}
+              >
+                {link.label}
+              </a>
+            ))}
+            <a
+              href="#contact"
+              onClick={(e) => handleLinkClick(e, '#contact')}
+              style={{
+                background: '#2563eb',
+                color: 'white',
+                borderRadius: 999,
+                padding: '12px 36px',
+                fontSize: 16,
+                fontWeight: 600,
+                textDecoration: 'none',
+                marginTop: 16,
+              }}
+            >
+              Hire Me
+            </a>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

@@ -1,100 +1,187 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function CustomCursor() {
-  const [isTouchDevice, setIsTouchDevice] = useState(true);
-  const [isHovering, setIsHovering] = useState(false);
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const mousePos = useRef({ x: -100, y: -100 });
+  const ringPos = useRef({ x: -100, y: -100 });
+  const [isHovered, setIsHovered] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
+  const [dotColor, setDotColor] = useState('#2563eb');
+  const [visible, setVisible] = useState(false);
 
-  // Use refs for mouse positions to avoid dependency cycles in requestAnimationFrame
-  const mouse = useRef({ x: 0, y: 0 });
-  const dotPos = useRef({ x: 0, y: 0 });
-  const ringPos = useRef({ x: 0, y: 0 });
+  // Sync cursor-none class with visibility state to hide system cursor safely
+  useEffect(() => {
+    if (visible) {
+      document.documentElement.classList.add('custom-cursor-active');
+    } else {
+      document.documentElement.classList.remove('custom-cursor-active');
+    }
+    return () => {
+      document.documentElement.classList.remove('custom-cursor-active');
+    };
+  }, [visible]);
 
   useEffect(() => {
-    // Check if it's a touch device
-    const touchQuery = window.matchMedia('(hover: none) and (pointer: coarse)');
-    setIsTouchDevice(touchQuery.matches);
-    
-    if (touchQuery.matches) return;
+    const dot = dotRef.current;
+    const ring = ringRef.current;
+    if (!dot || !ring) return;
 
-    // Hide default cursor
-    document.body.style.cursor = 'none';
+    let animFrame: number;
+    let clickTimeout: NodeJS.Timeout;
 
-    const handleMouseMove = (e: MouseEvent) => {
-      mouse.current = { x: e.clientX, y: e.clientY };
-    };
-
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (
-        target.tagName.toLowerCase() === 'button' ||
-        target.tagName.toLowerCase() === 'a' ||
-        target.closest('button') ||
-        target.closest('a')
-      ) {
-        setIsHovering(true);
-      } else {
-        setIsHovering(false);
+    const onMouseMove = (e: MouseEvent) => {
+      mousePos.current = { x: e.clientX, y: e.clientY };
+      
+      if (!visible) {
+        setVisible(true);
       }
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseover', handleMouseOver);
+    const onMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const interactive = target.closest('a, button, [role="button"], input, textarea');
+      if (interactive) {
+        setIsHovered(true);
+        setDotColor('#f97316'); // Orange dot
+      }
+    };
 
-    let animationFrameId: number;
+    const onMouseOut = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const interactive = target.closest('a, button, [role="button"], input, textarea');
+      if (interactive) {
+        setIsHovered(false);
+        setDotColor('#2563eb'); // Reset to Blue dot
+      }
+    };
 
-    const render = () => {
-      // Dot follows exactly
-      dotPos.current.x = mouse.current.x;
-      dotPos.current.y = mouse.current.y;
+    const onClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const interactive = target.closest('a, button, [role="button"], input, textarea');
+      if (!interactive) return;
 
-      // Ring follows with slight delay (lerp 0.1)
-      ringPos.current.x += (mouse.current.x - ringPos.current.x) * 0.1;
-      ringPos.current.y += (mouse.current.y - ringPos.current.y) * 0.1;
+      setIsClicked(true);
+      clearTimeout(clickTimeout);
+      clickTimeout = setTimeout(() => {
+        setIsClicked(false);
+      }, 150);
+    };
 
-      if (dotRef.current) {
-        dotRef.current.style.transform = `translate3d(${dotPos.current.x}px, ${dotPos.current.y}px, 0) translate(-50%, -50%)`;
+    const onMouseLeave = () => {
+      dot.style.opacity = '0';
+      ring.style.opacity = '0';
+    };
+
+    const onMouseEnter = () => {
+      if (visible) {
+        dot.style.opacity = '1';
+        ring.style.opacity = '1';
+      }
+    };
+
+    const onTouchStart = () => {
+      // If user touches screen, disable custom cursor to restore defaults
+      setVisible(false);
+    };
+
+    const animate = () => {
+      if (visible) {
+        // Move dot instantly inside anim frame to avoid rendering stutter
+        dot.style.transform = `translate3d(${mousePos.current.x - 4}px, ${mousePos.current.y - 4}px, 0)`;
+        dot.style.opacity = '1';
+
+        // Lerp ring position smoothly
+        ringPos.current.x += (mousePos.current.x - ringPos.current.x) * 0.15;
+        ringPos.current.y += (mousePos.current.y - ringPos.current.y) * 0.15;
+        ring.style.transform = `translate3d(${ringPos.current.x - 18}px, ${ringPos.current.y - 18}px, 0)`;
+        ring.style.opacity = '1';
+      } else {
+        dot.style.opacity = '0';
+        ring.style.opacity = '0';
       }
       
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0) translate(-50%, -50%)`;
-      }
-
-      animationFrameId = requestAnimationFrame(render);
+      animFrame = requestAnimationFrame(animate);
     };
 
-    animationFrameId = requestAnimationFrame(render);
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseover', onMouseOver);
+    document.addEventListener('mouseout', onMouseOut);
+    document.addEventListener('click', onClick);
+    document.addEventListener('touchstart', onTouchStart, { passive: true });
+    document.documentElement.addEventListener('mouseleave', onMouseLeave);
+    document.documentElement.addEventListener('mouseenter', onMouseEnter);
+    
+    animFrame = requestAnimationFrame(animate);
 
     return () => {
-      document.body.style.cursor = 'auto';
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseover', handleMouseOver);
-      cancelAnimationFrame(animationFrameId);
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseover', onMouseOver);
+      document.removeEventListener('mouseout', onMouseOut);
+      document.removeEventListener('click', onClick);
+      document.removeEventListener('touchstart', onTouchStart);
+      document.documentElement.removeEventListener('mouseleave', onMouseLeave);
+      document.documentElement.removeEventListener('mouseenter', onMouseEnter);
+      cancelAnimationFrame(animFrame);
+      clearTimeout(clickTimeout);
     };
-  }, []);
-
-  if (isTouchDevice) return null;
+  }, [visible]);
 
   return (
     <>
-      {/* Small Dot */}
+      {/* Dot */}
       <div
         ref={dotRef}
-        className="fixed top-0 left-0 w-2 h-2 bg-white rounded-full pointer-events-none z-[9999] mix-blend-difference"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: 8,
+          height: 8,
+          background: dotColor,
+          borderRadius: '50%',
+          pointerEvents: 'none',
+          zIndex: 100000,
+          opacity: 0,
+          transition: 'background 0.2s ease, opacity 0.2s ease',
+          willChange: 'transform',
+        }}
       />
       
-      {/* Outer Ring */}
+      {/* Ring */}
       <div
         ref={ringRef}
-        className={`fixed top-0 left-0 rounded-full pointer-events-none z-[9998] transition-all duration-300 ease-out border-2 ${
-          isHovering
-            ? 'w-12 h-12 bg-cyan-400/10 border-cyan-400'
-            : 'w-8 h-8 border-cyan-400'
-        }`}
-      />
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: 36,
+          height: 36,
+          border: '2px solid rgba(37, 99, 235, 0.5)',
+          borderRadius: '50%',
+          pointerEvents: 'none',
+          zIndex: 99999,
+          opacity: 0,
+          transition: 'background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease',
+          willChange: 'transform',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            borderRadius: '50%',
+            background: isHovered ? 'rgba(37, 99, 235, 0.08)' : 'transparent',
+            transform: isClicked ? 'scale(1.8)' : isHovered ? 'scale(1.4)' : 'scale(1)',
+            transition: 'transform 0.15s ease-out, background 0.2s ease',
+          }}
+        />
+      </div>
     </>
   );
 }

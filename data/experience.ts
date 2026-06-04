@@ -23,6 +23,7 @@ export const experiences: Experience[] = [
     id: "exp-2",
     role: "Software Developer",
     company: "Angrio Technologies",
+    duration: "2021 – 2022",
     points: [
       "Worked on The Leansuite platform using Next.js, TypeScript, and Tailwind CSS",
       "Implemented Sanity CMS for dynamic content management",

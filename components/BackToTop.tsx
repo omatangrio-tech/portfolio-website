@@ -1,45 +1,50 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import { ArrowUp } from 'lucide-react';
 
 export default function BackToTop() {
-  const [isVisible, setIsVisible] = useState(false);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const toggleVisibility = () => {
-      if (window.scrollY > 500) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
-    };
-
-    window.addEventListener('scroll', toggleVisibility);
-    return () => window.removeEventListener('scroll', toggleVisibility);
+    const onScroll = () => setShow(window.scrollY > 400);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth', // Lenis will handle the smoothness as well
-    });
-  };
+  if (!show) return null;
 
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 20 }}
-          onClick={scrollToTop}
-          className="fixed bottom-8 right-8 p-3 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 backdrop-blur-md hover:bg-cyan-500/30 hover:shadow-[0_0_15px_rgba(6,182,212,0.5)] transition-all z-50 group"
-        >
-          <ArrowUp className="w-6 h-6 group-hover:-translate-y-1 transition-transform" />
-        </motion.button>
-      )}
-    </AnimatePresence>
+    <button
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      aria-label="Back to top"
+      style={{
+        position: 'fixed',
+        bottom: 32,
+        right: 32,
+        width: 44,
+        height: 44,
+        background: '#2563eb',
+        color: 'white',
+        borderRadius: '50%',
+        border: 'none',
+        boxShadow: '0 4px 16px rgba(37,99,235,0.3)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999,
+        transition: 'all 0.3s ease',
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLButtonElement).style.background = '#1d4ed8';
+        (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)';
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLButtonElement).style.background = '#2563eb';
+        (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)';
+      }}
+    >
+      <ArrowUp size={20} />
+    </button>
   );
 }

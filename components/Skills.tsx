@@ -1,88 +1,126 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { skills } from '@/data/skills';
-import { Code2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
-
-const sectionVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { 
-      duration: 0.7, 
-      ease: [0.25, 0.46, 0.45, 0.94],
-      staggerChildren: 0.05
-    }
-  }
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { duration: 0.5 }
-  }
-};
 
 export default function Skills() {
-  const [hasReducedMotion, setHasReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setHasReducedMotion(mediaQuery.matches);
-  }, []);
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
   return (
-    <motion.section
+    <section
       id="skills"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-80px" }}
-      variants={hasReducedMotion ? {} : sectionVariants}
-      className="w-full py-24 bg-background"
+      style={{
+        background: '#f8fafc',
+        padding: '100px 0',
+        position: 'relative',
+        zIndex: 1,
+      }}
     >
-      <div className="container mx-auto px-6 md:px-12 max-w-6xl">
-        <motion.div variants={cardVariants} className="mb-16">
-          <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4">
-            My Tech <span className="text-cyan-400">Stack</span>
-          </h2>
-          <div className="w-20 h-1 bg-cyan-400 rounded-full" />
-        </motion.div>
+      <div
+        style={{
+          maxWidth: 1200,
+          margin: '0 auto',
+          padding: '0 clamp(24px, 5vw, 64px)',
+          textAlign: 'center',
+        }}
+      >
+        {/* Title & Subtitle */}
+        <h2
+          style={{
+            fontSize: 'clamp(36px, 5vw, 52px)',
+            fontWeight: 800,
+            color: '#0f172a',
+            lineHeight: 1.1,
+          }}
+        >
+          My Tech <span className="gradient-text">Stack</span>
+        </h2>
+        <p
+          style={{
+            color: '#94a3b8',
+            fontSize: 17,
+            marginTop: 12,
+            marginBottom: 56,
+          }}
+        >
+          Technologies and tools I bring to every project
+        </p>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {skills.map((skill, index) => (
-            <motion.div
-              key={index}
-              variants={cardVariants}
-              whileHover={hasReducedMotion ? {} : { scale: 1.05 }}
-              className="group relative p-6 rounded-2xl bg-surface-light border border-white/5 hover:border-cyan-400/50 transition-colors flex flex-col items-center justify-center text-center gap-4 overflow-hidden"
-            >
-              {/* Hover Glow */}
-              <div className="absolute inset-0 bg-cyan-400/0 group-hover:bg-cyan-400/5 transition-colors" />
-              
-              <motion.div 
-                className="text-cyan-400"
-                whileHover={hasReducedMotion ? {} : { 
-                  scale: [1, 1.2, 1],
-                  transition: { duration: 0.3 }
+        {/* Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[14px]">
+          {skills.map((skill, idx) => {
+            const isHovered = hoveredIdx === idx;
+            return (
+              <div
+                key={skill.name}
+                onMouseEnter={() => setHoveredIdx(idx)}
+                onMouseLeave={() => setHoveredIdx(null)}
+                style={{
+                  background: 'white',
+                  border: '1px solid',
+                  borderColor: isHovered ? `${skill.color}4d` : 'var(--border)', // 0.3 opacity hex suffix is 4d
+                  borderRadius: 16,
+                  padding: '28px 16px',
+                  textAlign: 'center',
+                  minHeight: 120,
+                  position: 'relative',
+                  overflow: 'hidden',
+                  boxShadow: isHovered ? 'var(--shadow-md)' : 'var(--shadow-sm)',
+                  transform: isHovered ? 'translateY(-5px)' : 'translateY(0)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
-                <Code2 size={32} />
-              </motion.div>
-              
-              <span className="font-medium text-gray-200 group-hover:text-white transition-colors">
-                {skill.name}
-              </span>
+                {/* Top accent line */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: 3,
+                    background: skill.color,
+                    opacity: isHovered ? 1 : 0,
+                    transition: 'opacity 0.3s ease',
+                  }}
+                />
 
-              {/* Animated underline */}
-              <div className="absolute bottom-0 left-0 h-1 bg-cyan-400 w-0 group-hover:w-full transition-all duration-300 ease-out" />
-            </motion.div>
-          ))}
+                {/* Icon */}
+                <div style={{ fontSize: 36, lineHeight: 1 }}>{skill.icon}</div>
+
+                {/* Name */}
+                <div
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: '#0f172a',
+                    marginTop: 12,
+                  }}
+                >
+                  {skill.name}
+                </div>
+
+                {/* Color dot */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: 8,
+                    right: 8,
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    background: skill.color,
+                    opacity: 0.4,
+                  }}
+                />
+              </div>
+            );
+          })}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 }
