@@ -53,22 +53,17 @@ function StatCard({ target, label, suffix = '+' }: StatCardProps) {
   return (
     <div
       ref={containerRef}
+      className="glass-card light-border-hover"
       style={{
-        background: '#f8fafc',
-        border: '1px solid var(--border)',
         borderRadius: 16,
         padding: '24px 16px',
         textAlign: 'center',
         transition: 'all 0.3s ease',
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = 'var(--blue-border)';
-        e.currentTarget.style.boxShadow = 'var(--shadow-md)';
         e.currentTarget.style.transform = 'translateY(-3px)';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = 'var(--border)';
-        e.currentTarget.style.boxShadow = 'none';
         e.currentTarget.style.transform = 'translateY(0)';
       }}
     >
@@ -95,28 +90,25 @@ export default function About() {
   return (
     <section
       id="about"
+      className="futuristic-section section-reveal"
       style={{
-        background: 'white',
         padding: '100px 0',
         position: 'relative',
         zIndex: 1,
       }}
     >
-      <div
-        style={{
-          maxWidth: 1200,
-          margin: '0 auto',
-          padding: '0 clamp(24px, 5vw, 64px)',
-        }}
-      >
+      <div className="section-shell">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
           {/* Left Column - Photo */}
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className="depth-scene" style={{ display: 'flex', justifyContent: 'center' }}>
             <div
+              className="glass-card light-border-hover depth-card"
               style={{
                 position: 'relative',
                 width: 'min(100%, 320px)',
                 height: 'clamp(300px, 78vw, 400px)',
+                borderRadius: 24,
+                padding: 14,
               }}
             >
               {/* Decorative spinning dashed ring */}
@@ -131,14 +123,14 @@ export default function About() {
                 }}
               />
               <div
+                className="depth-layer"
                 style={{
                   position: 'relative',
                   width: '100%',
                   height: '100%',
                   borderRadius: 20,
                   overflow: 'hidden',
-                  border: '3px solid rgba(37, 99, 235, 0.15)',
-                  boxShadow: 'var(--shadow-lg)',
+                  border: '1px solid rgba(148, 163, 184, 0.24)',
                 }}
               >
                 <Image
@@ -154,29 +146,21 @@ export default function About() {
 
           {/* Right Column - Text Bio */}
           <div>
-            <h2
-              style={{
-                fontSize: 'clamp(36px, 5vw, 52px)',
-                fontWeight: 800,
-                color: '#0f172a',
-                lineHeight: 1.1,
-              }}
-            >
-              About <span className="gradient-text">Me</span>
-            </h2>
-            <div
-              style={{
-                width: 56,
-                height: 3,
-                background: 'linear-gradient(90deg, #2563eb, #f97316)',
-                margin: '12px 0 24px',
-              }}
-            />
+            <div className="awwards-header-row" style={{ marginBottom: 24 }}>
+              <div className="awwards-index">01</div>
+              <div>
+                <div className="section-kicker">Profile</div>
+                <h2 className="section-title" style={{ marginTop: 8 }}>
+                  About <span className="gradient-text">Me</span>
+                </h2>
+                <div className="futuristic-divider" style={{ margin: '12px 0 0', maxWidth: 260 }} />
+              </div>
+            </div>
             <p
               style={{
                 fontSize: 'clamp(15px, 2.8vw, 17px)',
                 lineHeight: 1.9,
-                color: '#475569',
+                color: '#94a3b8',
                 marginBottom: 32,
               }}
             >

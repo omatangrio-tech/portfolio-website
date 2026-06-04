@@ -21,6 +21,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
+        <div className="futuristic-page-shell" aria-hidden="true">
+          <div className="futuristic-ambient-orb orb-blue" />
+          <div className="futuristic-ambient-orb orb-orange" />
+          <div className="futuristic-ambient-grid" />
+          <div className="futuristic-noise" />
+        </div>
         <LenisProvider>
           <Loader />
           <CustomCursor />

@@ -9,42 +9,28 @@ export default function Skills() {
   return (
     <section
       id="skills"
+      className="futuristic-section section-reveal"
       style={{
-        background: '#f8fafc',
         padding: '100px 0',
         position: 'relative',
         zIndex: 1,
       }}
     >
-      <div
-        style={{
-          maxWidth: 1200,
-          margin: '0 auto',
-          padding: '0 clamp(24px, 5vw, 64px)',
-          textAlign: 'center',
-        }}
-      >
+      <div className="section-shell" style={{ textAlign: 'center' }}>
         {/* Title & Subtitle */}
-        <h2
-          style={{
-            fontSize: 'clamp(36px, 5vw, 52px)',
-            fontWeight: 800,
-            color: '#0f172a',
-            lineHeight: 1.1,
-          }}
-        >
-          My Tech <span className="gradient-text">Stack</span>
-        </h2>
-        <p
-          style={{
-            color: '#94a3b8',
-            fontSize: 'clamp(15px, 2.8vw, 17px)',
-            marginTop: 12,
-            marginBottom: 56,
-          }}
-        >
-          Technologies and tools I bring to every project
-        </p>
+        <div className="awwards-header-row" style={{ justifyContent: 'center', marginBottom: 18 }}>
+          <div className="awwards-index">02</div>
+          <div style={{ textAlign: 'left' }}>
+            <div className="section-kicker">Capabilities</div>
+            <h2 className="section-title">
+              My Tech <span className="gradient-text">Stack</span>
+            </h2>
+            <p className="section-subtitle">
+              Technologies and tools I bring to every project
+            </p>
+          </div>
+        </div>
+        <div className="futuristic-divider" style={{ margin: '0 auto 40px', maxWidth: 420 }} />
 
         {/* Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[14px]">
@@ -55,17 +41,14 @@ export default function Skills() {
                 key={skill.name}
                 onMouseEnter={() => setHoveredIdx(idx)}
                 onMouseLeave={() => setHoveredIdx(null)}
+                className="premium-panel light-border-hover depth-card hover-lift-soft"
                 style={{
-                  background: 'white',
-                  border: '1px solid',
-                  borderColor: isHovered ? `${skill.color}4d` : 'var(--border)', // 0.3 opacity hex suffix is 4d
                   borderRadius: 16,
                   padding: '28px 16px',
                   textAlign: 'center',
                   minHeight: 120,
                   position: 'relative',
                   overflow: 'hidden',
-                  boxShadow: isHovered ? 'var(--shadow-md)' : 'var(--shadow-sm)',
                   transform: isHovered ? 'translateY(-5px)' : 'translateY(0)',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                   display: 'flex',
@@ -89,14 +72,15 @@ export default function Skills() {
                 />
 
                 {/* Icon */}
-                <div style={{ fontSize: 36, lineHeight: 1 }}>{skill.icon}</div>
+                <div className="depth-layer" style={{ fontSize: 36, lineHeight: 1 }}>{skill.icon}</div>
 
                 {/* Name */}
                 <div
+                  className="depth-layer"
                   style={{
                     fontSize: 13,
                     fontWeight: 600,
-                    color: '#0f172a',
+                    color: '#e2e8f0',
                     marginTop: 12,
                   }}
                 >

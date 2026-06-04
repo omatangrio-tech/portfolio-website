@@ -69,43 +69,30 @@ export default function Contact() {
   return (
     <section
       id="contact"
+      className="futuristic-section section-reveal"
       style={{
-        background: 'white',
         padding: '100px 0',
         position: 'relative',
         zIndex: 1,
       }}
     >
-      <div
-        style={{
-          maxWidth: 1200,
-          margin: '0 auto',
-          padding: '0 clamp(24px, 5vw, 64px)',
-        }}
-      >
+      <div className="section-shell">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
           {/* Left Column: Get in touch & Contact cards */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 32 }}>
             <div>
-              <h2
-                style={{
-                  fontSize: 'clamp(32px, 7vw, 40px)',
-                  fontWeight: 800,
-                  color: '#0f172a',
-                }}
-              >
-                Get In <span className="gradient-text">Touch</span>
-              </h2>
-              <p
-                style={{
-                  color: '#475569',
-                  fontSize: 'clamp(15px, 2.8vw, 17px)',
-                  marginTop: 12,
-                  lineHeight: 1.6,
-                }}
-              >
-                Have a project in mind? I'd love to hear from you.
-              </p>
+              <div className="awwards-header-row" style={{ marginBottom: 12 }}>
+                <div className="awwards-index">05</div>
+                <div>
+                  <div className="section-kicker">Contact</div>
+                  <h2 className="section-title" style={{ marginTop: 8 }}>
+                    Get In <span className="gradient-text">Touch</span>
+                  </h2>
+                  <p className="section-subtitle" style={{ lineHeight: 1.6 }}>
+                    Have a project in mind? I'd love to hear from you.
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -119,9 +106,8 @@ export default function Contact() {
                     rel="noopener noreferrer"
                     onMouseEnter={() => setHoveredCard(idx)}
                     onMouseLeave={() => setHoveredCard(null)}
+                    className="premium-panel light-border-hover depth-card hover-lift-soft"
                     style={{
-                      background: '#f8fafc',
-                      border: '1px solid var(--border)',
                       borderRadius: 12,
                       padding: '16px 20px',
                       display: 'flex',
@@ -130,17 +116,17 @@ export default function Contact() {
                       textDecoration: 'none',
                       transition: 'all 0.3s ease',
                       transform: isHovered ? 'translateX(4px)' : 'translateX(0)',
-                      borderColor: isHovered ? 'var(--blue-border)' : 'var(--border)',
                     }}
                   >
                     {/* Icon wrapper */}
                     <div
+                      className="depth-layer"
                       style={{
                         width: 40,
                         height: 40,
                         borderRadius: '50%',
-                        background: '#eff6ff',
-                        color: '#2563eb',
+                        background: 'rgba(37,99,235,0.2)',
+                        color: '#93c5fd',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -149,7 +135,7 @@ export default function Contact() {
                       {item.icon}
                     </div>
 
-                    <div>
+                    <div className="depth-layer">
                       <div
                         style={{
                           fontSize: 11,
@@ -164,7 +150,7 @@ export default function Contact() {
                       <div
                         style={{
                           fontSize: 'clamp(13px, 3.6vw, 14px)',
-                          color: '#0f172a',
+                          color: '#e2e8f0',
                           fontWeight: 500,
                           wordBreak: 'break-word',
                         }}
@@ -179,7 +165,7 @@ export default function Contact() {
           </div>
 
           {/* Right Column: Form */}
-          <div>
+          <div className="premium-panel light-border-hover depth-card hover-lift-soft" style={{ borderRadius: 20, padding: 'clamp(18px, 4vw, 28px)' }}>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
               {/* Name */}
               <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -188,7 +174,7 @@ export default function Contact() {
                   style={{
                     fontSize: 13,
                     fontWeight: 500,
-                    color: '#475569',
+                    color: '#94a3b8',
                     marginBottom: 8,
                   }}
                 >
@@ -202,12 +188,13 @@ export default function Contact() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   style={{
-                    background: 'white',
-                    border: '1.5px solid var(--border)',
+                    background: 'rgba(15,23,42,0.45)',
+                    border: '1.5px solid rgba(148,163,184,0.3)',
                     borderRadius: 12,
                     height: 52,
                     padding: '0 18px',
                     fontSize: 15,
+                    color: '#e2e8f0',
                     outline: 'none',
                     transition: 'all 0.2s ease',
                   }}
@@ -229,7 +216,7 @@ export default function Contact() {
                   style={{
                     fontSize: 13,
                     fontWeight: 500,
-                    color: '#475569',
+                    color: '#94a3b8',
                     marginBottom: 8,
                   }}
                 >
@@ -243,12 +230,13 @@ export default function Contact() {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   style={{
-                    background: 'white',
-                    border: '1.5px solid var(--border)',
+                    background: 'rgba(15,23,42,0.45)',
+                    border: '1.5px solid rgba(148,163,184,0.3)',
                     borderRadius: 12,
                     height: 52,
                     padding: '0 18px',
                     fontSize: 15,
+                    color: '#e2e8f0',
                     outline: 'none',
                     transition: 'all 0.2s ease',
                   }}
@@ -270,7 +258,7 @@ export default function Contact() {
                   style={{
                     fontSize: 13,
                     fontWeight: 500,
-                    color: '#475569',
+                    color: '#94a3b8',
                     marginBottom: 8,
                   }}
                 >
@@ -283,12 +271,13 @@ export default function Contact() {
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   style={{
-                    background: 'white',
-                    border: '1.5px solid var(--border)',
+                    background: 'rgba(15,23,42,0.45)',
+                    border: '1.5px solid rgba(148,163,184,0.3)',
                     borderRadius: 12,
                     minHeight: 160,
                     padding: '16px 18px',
                     fontSize: 15,
+                    color: '#e2e8f0',
                     outline: 'none',
                     resize: 'none',
                     transition: 'all 0.2s ease',

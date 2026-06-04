@@ -13,10 +13,15 @@ export default function Home() {
       <Navbar />
       <main className="w-full">
         <Hero />
+        <div className="cinematic-divider" aria-hidden="true" />
         <About />
+        <div className="cinematic-divider" aria-hidden="true" />
         <Skills />
+        <div className="cinematic-divider" aria-hidden="true" />
         <Projects />
+        <div className="cinematic-divider" aria-hidden="true" />
         <Experience />
+        <div className="cinematic-divider" aria-hidden="true" />
         <Contact />
       </main>
       <Footer />

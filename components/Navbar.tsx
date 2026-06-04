@@ -59,41 +59,65 @@ export default function Navbar() {
   }, [isDesktop]);
 
   useEffect(() => {
-    const observerOptions = {
-      root: null,
-      rootMargin: '-20% 0px -60% 0px',
-      threshold: 0,
+    let rafId = 0;
+    let ticking = false;
+
+    const updateActiveSection = () => {
+      const sections = navLinks
+        .map((link) => {
+          const el = document.getElementById(link.id);
+          if (!el) return null;
+          return { id: link.id, top: el.offsetTop };
+        })
+        .filter((s): s is { id: string; top: number } => s !== null)
+        .sort((a, b) => a.top - b.top);
+
+      if (sections.length === 0) return;
+
+      const navOffset = isDesktop ? 110 : 96;
+      const probeY = window.scrollY + navOffset + window.innerHeight * 0.2;
+
+      let currentId = sections[0].id;
+      for (let i = 0; i < sections.length; i += 1) {
+        const current = sections[i];
+        const next = sections[i + 1];
+        if (probeY >= current.top && (!next || probeY < next.top)) {
+          currentId = current.id;
+          break;
+        }
+      }
+
+      setActiveSection((prev) => (prev === currentId ? prev : currentId));
     };
 
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
-        }
+    const onScrollOrResize = () => {
+      if (ticking) return;
+      ticking = true;
+      rafId = window.requestAnimationFrame(() => {
+        updateActiveSection();
+        ticking = false;
       });
     };
 
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    navLinks.forEach((link) => {
-      const el = document.getElementById(link.id);
-      if (el) observer.observe(el);
-    });
+    updateActiveSection();
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    window.addEventListener('resize', onScrollOrResize);
 
     return () => {
-      navLinks.forEach((link) => {
-        const el = document.getElementById(link.id);
-        if (el) observer.unobserve(el);
-      });
+      window.removeEventListener('scroll', onScrollOrResize);
+      window.removeEventListener('resize', onScrollOrResize);
+      window.cancelAnimationFrame(rafId);
     };
-  }, []);
+  }, [isDesktop]);
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
     const target = document.querySelector(href);
     if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
+      const navOffset = isDesktop ? 96 : 84;
+      const y = target.getBoundingClientRect().top + window.scrollY - navOffset;
+      window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
     }
   };
 
@@ -104,13 +128,13 @@ export default function Navbar() {
           top: 16,
           left: '50%',
           transform: 'translateX(-50%)',
-          width: 'min(880px, 92vw)',
-          background: 'rgba(255, 255, 255, 0.92)',
-          backdropFilter: 'blur(20px) saturate(180%)',
-          border: '1px solid rgba(37, 99, 235, 0.15)',
+          width: 'min(980px, 92vw)',
+          background: 'rgba(15, 23, 42, 0.72)',
+          backdropFilter: 'blur(22px) saturate(145%)',
+          border: '1px solid rgba(148, 163, 184, 0.24)',
           borderRadius: 9999,
-          padding: '12px 32px',
-          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5)',
+          padding: '12px clamp(20px, 3vw, 34px)',
+          boxShadow: '0 16px 40px rgba(2, 6, 23, 0.45)',
           transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
           zIndex: 999,
           display: 'flex',
@@ -122,8 +146,8 @@ export default function Navbar() {
           top: 0,
           left: 0,
           width: '100%',
-          background: 'white',
-          borderBottom: '1px solid var(--border)',
+          background: 'rgba(2, 6, 23, 0.6)',
+          borderBottom: '1px solid rgba(148, 163, 184, 0.2)',
           padding: '16px clamp(24px, 5vw, 64px)',
           transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
           zIndex: 999,
@@ -136,8 +160,8 @@ export default function Navbar() {
         top: 0,
         left: 0,
         width: '100%',
-        background: 'white',
-        borderBottom: '1px solid var(--border)',
+        background: 'rgba(2, 6, 23, 0.8)',
+        borderBottom: '1px solid rgba(148, 163, 184, 0.2)',
         padding: '14px clamp(16px, 5vw, 24px)',
         transition: 'all 0.3s ease',
         zIndex: 999,
@@ -154,10 +178,11 @@ export default function Navbar() {
           href="#home"
           onClick={(e) => handleLinkClick(e, '#home')}
           style={{
-            fontSize: 22,
+            fontSize: 20,
             fontWeight: 800,
-            color: '#2563eb',
+            color: '#93c5fd',
             textDecoration: 'none',
+            letterSpacing: '0.02em',
           }}
         >
           Om.dev
@@ -165,7 +190,7 @@ export default function Navbar() {
 
         {/* Links - Desktop */}
         <div
-          style={{ alignItems: 'center', gap: scrolled ? 28 : 20 }}
+          style={{ alignItems: 'center', gap: scrolled ? 26 : 18 }}
           className="hidden md:flex"
         >
           {navLinks.map((link) => {
@@ -178,17 +203,18 @@ export default function Navbar() {
                 style={{
                   fontSize: 14,
                   fontWeight: isActive ? 600 : 500,
-                  color: isActive ? '#2563eb' : '#475569',
+                  color: isActive ? '#93c5fd' : '#94a3b8',
                   textDecoration: 'none',
                   position: 'relative',
                   transition: 'color 0.2s',
-                  padding: '4px 0',
+                  padding: '5px 0',
+                  letterSpacing: '0.01em',
                 }}
                 onMouseEnter={(e) => {
-                  if (!isActive) e.currentTarget.style.color = '#2563eb';
+                  if (!isActive) e.currentTarget.style.color = '#93c5fd';
                 }}
                 onMouseLeave={(e) => {
-                  if (!isActive) e.currentTarget.style.color = '#475569';
+                  if (!isActive) e.currentTarget.style.color = '#94a3b8';
                 }}
               >
                 {link.label}
@@ -202,7 +228,7 @@ export default function Navbar() {
                       width: 4,
                       height: 4,
                       borderRadius: '50%',
-                      background: '#2563eb',
+                      background: '#93c5fd',
                     }}
                   />
                 )}
@@ -220,7 +246,7 @@ export default function Navbar() {
               background: '#2563eb',
               color: 'white',
               borderRadius: 999,
-              padding: '9px 24px',
+              padding: '9px 20px',
               fontSize: 13,
               fontWeight: 600,
               textDecoration: 'none',
@@ -240,7 +266,7 @@ export default function Navbar() {
           style={{
             background: 'none',
             border: 'none',
-            color: '#2563eb',
+            color: '#93c5fd',
             padding: 4,
           }}
           aria-label="Open menu"
@@ -276,8 +302,8 @@ export default function Navbar() {
               style={{
                 width: 'min(88vw, 360px)',
                 height: '100%',
-                background: 'white',
-                borderLeft: '1px solid var(--border)',
+                background: 'rgba(15,23,42,0.96)',
+                borderLeft: '1px solid rgba(148,163,184,0.24)',
                 boxShadow: '-12px 0 36px rgba(2, 6, 23, 0.15)',
                 display: 'flex',
                 flexDirection: 'column',
@@ -290,7 +316,7 @@ export default function Navbar() {
                   style={{
                     fontSize: 'clamp(19px, 4.5vw, 22px)',
                     fontWeight: 800,
-                    color: '#2563eb',
+                    color: '#93c5fd',
                   }}
                 >
                   Om.dev
@@ -300,7 +326,7 @@ export default function Navbar() {
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: '#2563eb',
+                    color: '#93c5fd',
                     padding: 4,
                   }}
                   aria-label="Close menu"
@@ -333,10 +359,10 @@ export default function Navbar() {
                     style={{
                       fontSize: 'clamp(18px, 6vw, 22px)',
                       fontWeight: 700,
-                      color: activeSection === link.id ? '#2563eb' : '#0f172a',
+                      color: activeSection === link.id ? '#93c5fd' : '#e2e8f0',
                       textDecoration: 'none',
                       padding: '10px 0',
-                      borderBottom: '1px solid rgba(15, 23, 42, 0.06)',
+                      borderBottom: '1px solid rgba(148, 163, 184, 0.16)',
                     }}
                   >
                     {link.label}

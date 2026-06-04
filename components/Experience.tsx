@@ -9,40 +9,26 @@ export default function Experience() {
   return (
     <section
       id="experience"
+      className="futuristic-section section-reveal"
       style={{
-        background: '#f8fafc',
         padding: '100px 0',
         position: 'relative',
         zIndex: 1,
       }}
     >
-      <div
-        style={{
-          maxWidth: 800,
-          margin: '0 auto',
-          padding: '0 clamp(24px, 5vw, 64px)',
-        }}
-      >
+      <div className="section-shell" style={{ maxWidth: 860 }}>
         {/* Title */}
-        <div style={{ textAlign: 'center', marginBottom: 56 }}>
-          <h2
-            style={{
-              fontSize: 'clamp(36px, 5vw, 52px)',
-              fontWeight: 800,
-              color: '#0f172a',
-              lineHeight: 1.1,
-            }}
-          >
-            Work <span className="gradient-text">Experience</span>
-          </h2>
-          <div
-            style={{
-              width: 56,
-              height: 3,
-              background: 'linear-gradient(90deg, #2563eb, #f97316)',
-              margin: '12px auto 0',
-            }}
-          />
+        <div style={{ marginBottom: 56 }}>
+          <div className="awwards-header-row">
+            <div className="awwards-index">04</div>
+            <div>
+              <div className="section-kicker">Timeline</div>
+              <h2 className="section-title">
+                Work <span className="gradient-text">Experience</span>
+              </h2>
+              <div className="futuristic-divider" style={{ margin: '12px 0 0', maxWidth: 320 }} />
+            </div>
+          </div>
         </div>
 
         {/* Timeline Container */}
@@ -115,14 +101,11 @@ export default function Experience() {
                 <div
                   onMouseEnter={() => setHoveredIdx(idx)}
                   onMouseLeave={() => setHoveredIdx(null)}
+                  className="premium-panel light-border-hover depth-card hover-lift-soft"
                   style={{
                     flex: 1,
-                    background: 'white',
-                    border: '1px solid var(--border)',
                     borderRadius: 20,
                     padding: 'clamp(18px, 4vw, 28px) clamp(16px, 4.5vw, 32px)',
-                    boxShadow: isHovered ? 'var(--shadow-md)' : 'var(--shadow-sm)',
-                    borderColor: isHovered ? 'var(--blue-border)' : 'var(--border)',
                     transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
                     transition: 'all 0.3s ease',
                     position: 'relative',
@@ -144,6 +127,7 @@ export default function Experience() {
 
                   {/* Header Row */}
                   <div
+                    className="depth-layer"
                     style={{
                       display: 'flex',
                       alignItems: 'flex-start',
@@ -156,16 +140,16 @@ export default function Experience() {
                       style={{
                         fontSize: 'clamp(18px, 4vw, 20px)',
                         fontWeight: 700,
-                        color: '#0f172a',
+                        color: '#e2e8f0',
                       }}
                     >
                       {exp.role}
                     </h3>
                     <span
                       style={{
-                        background: '#eff6ff',
-                        color: '#2563eb',
-                        border: '1px solid rgba(37,99,235,0.2)',
+                        background: 'rgba(37,99,235,0.18)',
+                        color: '#93c5fd',
+                        border: '1px solid rgba(37,99,235,0.35)',
                         borderRadius: 999,
                         padding: '5px 16px',
                         fontSize: 12,
@@ -178,6 +162,7 @@ export default function Experience() {
 
                   {/* Company Row */}
                   <div
+                    className="depth-layer"
                     style={{
                       marginTop: 6,
                       display: 'flex',
@@ -195,7 +180,7 @@ export default function Experience() {
                     />
                     <span
                       style={{
-                        color: '#2563eb',
+                        color: '#60a5fa',
                         fontSize: 15,
                         fontWeight: 600,
                       }}
@@ -215,6 +200,7 @@ export default function Experience() {
 
                   {/* Bullets */}
                   <ul
+                    className="depth-layer"
                     style={{
                       listStyle: 'none',
                       padding: 0,
@@ -244,7 +230,7 @@ export default function Experience() {
                         </span>
                         <span
                           style={{
-                            color: '#475569',
+                            color: '#94a3b8',
                             fontSize: 14,
                             lineHeight: 1.8,
                           }}

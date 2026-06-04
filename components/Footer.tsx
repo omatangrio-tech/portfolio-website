@@ -5,19 +5,14 @@ import { Github, Linkedin } from 'lucide-react';
 export default function Footer() {
   return (
     <footer
+      className="futuristic-section"
       style={{
-        background: 'white',
-        borderTop: '1px solid var(--border)',
-        padding: '48px 0 32px',
+        background: 'rgba(15,23,42,0.65)',
+        borderTop: '1px solid rgba(148,163,184,0.2)',
+        padding: '56px 0 34px',
       }}
     >
-      <div
-        style={{
-          maxWidth: 1200,
-          margin: '0 auto',
-          padding: '0 clamp(24px, 5vw, 64px)',
-        }}
-      >
+      <div className="section-shell">
         <div
           style={{
             display: 'flex',
@@ -31,9 +26,10 @@ export default function Footer() {
           <div>
             <div
               style={{
-                fontSize: 22,
+                fontSize: 20,
                 fontWeight: 800,
-                color: '#2563eb',
+                color: '#93c5fd',
+                letterSpacing: '0.02em',
               }}
             >
               Om.dev
@@ -49,7 +45,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               aria-label="GitHub"
               style={{ color: '#94a3b8', transition: 'color 0.2s' }}
-              onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#2563eb')}
+              onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#93c5fd')}
               onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#94a3b8')}
             >
               <Github size={20} />
@@ -60,7 +56,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               aria-label="LinkedIn"
               style={{ color: '#94a3b8', transition: 'color 0.2s' }}
-              onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#2563eb')}
+              onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#93c5fd')}
               onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#94a3b8')}
             >
               <Linkedin size={20} />
@@ -69,7 +65,7 @@ export default function Footer() {
         </div>
         <div
           style={{
-            borderTop: '1px solid var(--border)',
+            borderTop: '1px solid rgba(148,163,184,0.2)',
             paddingTop: 24,
             textAlign: 'center',
           }}
