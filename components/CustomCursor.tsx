@@ -9,9 +9,6 @@ export default function CustomCursor() {
   const mousePos = useRef({ x: -100, y: -100 });
   const ringPos = useRef({ x: -100, y: -100 });
   const isHoveredRef = useRef(false);
-  const cursorModeRef = useRef<'default' | 'link' | 'card' | 'text'>('default');
-  const isClickedRef = useRef(false);
-  const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [visible, setVisible] = useState(false);
   const [isPointerDevice, setIsPointerDevice] = useState(false);
 
@@ -42,16 +39,6 @@ export default function CustomCursor() {
     if (!dot || !ring || !fill || !isPointerDevice) return;
 
     let animFrame: number;
-    const getCursorMode = (target: HTMLElement | null): 'default' | 'link' | 'card' | 'text' => {
-      if (!target) return 'default';
-      const cursorEl = target.closest('[data-cursor]') as HTMLElement | null;
-      const cursorAttr = cursorEl?.getAttribute('data-cursor');
-      if (cursorAttr === 'link' || cursorAttr === 'card' || cursorAttr === 'text') return cursorAttr;
-
-      const interactive = target.closest('a, button, [role="button"], input, textarea');
-      if (interactive) return 'link';
-      return 'default';
-    };
 
     const onMouseMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
@@ -63,33 +50,14 @@ export default function CustomCursor() {
 
     const onMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const interactive = target.closest('a, button, [role="button"], input, textarea');
-      cursorModeRef.current = getCursorMode(target);
-      if (interactive) {
-        isHoveredRef.current = true;
-      }
+      const hoverable = target.closest('[data-cursor], a, button, [role="button"], input, textarea');
+      isHoveredRef.current = Boolean(hoverable);
     };
 
     const onMouseOut = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const interactive = target.closest('a, button, [role="button"], input, textarea');
       const related = (e.relatedTarget as HTMLElement | null) ?? null;
-      cursorModeRef.current = getCursorMode(related);
-      if (interactive) {
-        isHoveredRef.current = false;
-      }
-    };
-
-    const onClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const interactive = target.closest('a, button, [role="button"], input, textarea');
-      if (!interactive) return;
-
-      isClickedRef.current = true;
-      if (clickTimeoutRef.current) clearTimeout(clickTimeoutRef.current);
-      clickTimeoutRef.current = setTimeout(() => {
-        isClickedRef.current = false;
-      }, 150);
+      const hoverable = related?.closest('[data-cursor], a, button, [role="button"], input, textarea');
+      isHoveredRef.current = Boolean(hoverable);
     };
 
     const onMouseLeave = () => {
@@ -111,42 +79,24 @@ export default function CustomCursor() {
 
     const animate = () => {
       if (visible) {
-        // Move dot instantly inside anim frame to avoid rendering stutter
         dot.style.transform = `translate3d(${mousePos.current.x - 4}px, ${mousePos.current.y - 4}px, 0)`;
         dot.style.opacity = '1';
-        const mode = cursorModeRef.current;
-        dot.style.background = mode === 'text' ? '#e2e8f0' : isHoveredRef.current ? '#f97316' : '#2563eb';
+        dot.style.background = isHoveredRef.current ? '#c9ab84' : '#7a6a52';
 
         // Lerp ring position smoothly
         ringPos.current.x += (mousePos.current.x - ringPos.current.x) * 0.15;
         ringPos.current.y += (mousePos.current.y - ringPos.current.y) * 0.15;
-        const ringSize = mode === 'text' ? 52 : mode === 'card' ? 44 : 36;
+        const ringSize = isHoveredRef.current ? 40 : 34;
         ring.style.width = `${ringSize}px`;
         ring.style.height = `${ringSize}px`;
-        ring.style.borderColor =
-          mode === 'text'
-            ? 'rgba(148, 163, 184, 0.65)'
-            : mode === 'card'
-              ? 'rgba(96, 165, 250, 0.65)'
-              : 'rgba(37, 99, 235, 0.5)';
+        ring.style.borderColor = isHoveredRef.current
+          ? 'rgba(201, 171, 132, 0.62)'
+          : 'rgba(122, 106, 82, 0.56)';
         ring.style.transform = `translate3d(${ringPos.current.x - ringSize / 2}px, ${ringPos.current.y - ringSize / 2}px, 0)`;
         ring.style.opacity = '1';
 
-        fill.style.background =
-          mode === 'text'
-            ? 'rgba(148, 163, 184, 0.08)'
-            : isHoveredRef.current
-              ? 'rgba(37, 99, 235, 0.08)'
-              : 'transparent';
-        fill.style.transform = isClickedRef.current
-          ? 'scale(1.8)'
-          : mode === 'card'
-            ? 'scale(1.25)'
-            : mode === 'text'
-              ? 'scale(1.15)'
-              : isHoveredRef.current
-            ? 'scale(1.4)'
-            : 'scale(1)';
+        fill.style.background = isHoveredRef.current ? 'rgba(201, 171, 132, 0.08)' : 'transparent';
+        fill.style.transform = isHoveredRef.current ? 'scale(1.24)' : 'scale(1)';
       } else {
         dot.style.opacity = '0';
         ring.style.opacity = '0';
@@ -158,7 +108,6 @@ export default function CustomCursor() {
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseover', onMouseOver);
     document.addEventListener('mouseout', onMouseOut);
-    document.addEventListener('click', onClick);
     document.addEventListener('touchstart', onTouchStart, { passive: true });
     document.documentElement.addEventListener('mouseleave', onMouseLeave);
     document.documentElement.addEventListener('mouseenter', onMouseEnter);
@@ -169,12 +118,10 @@ export default function CustomCursor() {
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseover', onMouseOver);
       document.removeEventListener('mouseout', onMouseOut);
-      document.removeEventListener('click', onClick);
       document.removeEventListener('touchstart', onTouchStart);
       document.documentElement.removeEventListener('mouseleave', onMouseLeave);
       document.documentElement.removeEventListener('mouseenter', onMouseEnter);
       cancelAnimationFrame(animFrame);
-      if (clickTimeoutRef.current) clearTimeout(clickTimeoutRef.current);
     };
   }, [visible, isPointerDevice]);
 
@@ -191,7 +138,7 @@ export default function CustomCursor() {
           left: 0,
           width: 8,
           height: 8,
-          background: '#2563eb',
+          background: '#7a6a52',
           borderRadius: '50%',
           pointerEvents: 'none',
           zIndex: 100000,
@@ -210,7 +157,7 @@ export default function CustomCursor() {
           left: 0,
           width: 36,
           height: 36,
-          border: '2px solid rgba(37, 99, 235, 0.5)',
+          border: '2px solid rgba(122, 106, 82, 0.56)',
           borderRadius: '50%',
           pointerEvents: 'none',
           zIndex: 99999,

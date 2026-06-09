@@ -74,7 +74,7 @@ export default function Hero() {
           width: 'clamp(240px, 40vw, 400px)',
           height: 'clamp(240px, 40vw, 400px)',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(201,171,132,0.16) 0%, transparent 70%)',
           filter: 'blur(60px)',
           zIndex: 0,
           pointerEvents: 'none',
@@ -122,9 +122,9 @@ export default function Hero() {
             {/* Badge */}
             <div
               style={{
-                border: '1px solid rgba(37,99,235,0.25)',
-                background: 'rgba(37,99,235,0.14)',
-                color: '#bfdbfe',
+                border: '1px solid rgba(201,171,132,0.38)',
+                background: 'rgba(201,171,132,0.12)',
+                color: '#e7d7be',
                 borderRadius: 999,
                 padding: '6px 18px',
                 fontSize: 13,
@@ -170,7 +170,7 @@ export default function Hero() {
               }}
             >
               <span>I am a&nbsp;</span>
-              <span style={{ fontWeight: 600, color: '#60a5fa', borderRight: '2px solid #60a5fa' }}>
+              <span style={{ fontWeight: 600, color: '#d4b78f', borderRight: '2px solid #d4b78f' }}>
                 {typedText}
               </span>
             </div>
@@ -180,7 +180,7 @@ export default function Hero() {
               style={{
                 width: 100,
                 height: 2,
-                background: 'linear-gradient(90deg, #3b82f6, #f97316)',
+                background: 'linear-gradient(90deg, #d4b78f, #9ca3af)',
                 margin: '24px 0',
               }}
             />
@@ -191,13 +191,13 @@ export default function Hero() {
                 data-cursor="link"
                 onClick={() => handleScrollToSection('projects')}
                 style={{
-                  background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
+                  background: 'linear-gradient(135deg, #7a6a52, #9a8566)',
                   color: 'white',
                   padding: '12px clamp(18px, 6vw, 36px)',
                   borderRadius: 12,
                   fontSize: 'clamp(14px, 3.6vw, 16px)',
                   fontWeight: 600,
-                  border: '1px solid rgba(96,165,250,0.4)',
+                  border: '1px solid rgba(201,171,132,0.45)',
                   transition: 'all 0.2s',
                 }}
                 onMouseEnter={(e) => {
@@ -216,8 +216,8 @@ export default function Hero() {
                 rel="noopener noreferrer"
                 style={{
                   background: 'rgba(15,23,42,0.4)',
-                  border: '1px solid rgba(96,165,250,0.45)',
-                  color: '#bfdbfe',
+                  border: '1px solid rgba(201,171,132,0.45)',
+                  color: '#e7d7be',
                   padding: '10px clamp(18px, 6vw, 34px)',
                   borderRadius: 12,
                   fontSize: 'clamp(14px, 3.6vw, 16px)',
@@ -229,7 +229,7 @@ export default function Hero() {
                   transition: 'all 0.2s',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(37,99,235,0.24)';
+                  e.currentTarget.style.background = 'rgba(201,171,132,0.2)';
                   e.currentTarget.style.color = '#e2e8f0';
                 }}
                 onMouseLeave={(e) => {
@@ -269,7 +269,7 @@ export default function Hero() {
                 rel="noopener noreferrer"
                 aria-label="GitHub"
                 style={{ color: '#64748b', transition: 'color 0.2s' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = '#60a5fa')}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#d4b78f')}
                 onMouseLeave={(e) => (e.currentTarget.style.color = '#64748b')}
               >
                 <Github size={22} />
@@ -280,7 +280,7 @@ export default function Hero() {
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
                 style={{ color: '#64748b', transition: 'color 0.2s' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = '#60a5fa')}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#d4b78f')}
                 onMouseLeave={(e) => (e.currentTarget.style.color = '#64748b')}
               >
                 <Linkedin size={22} />
@@ -329,7 +329,7 @@ export default function Hero() {
                 rel="noopener noreferrer"
                 style={{
                   fontSize: 13,
-                  color: '#93c5fd',
+                  color: '#d4b78f',
                   textDecoration: 'none',
                   display: 'inline-flex',
                   alignItems: 'center',
@@ -344,9 +344,9 @@ export default function Hero() {
                   <span
                     key={t}
                     style={{
-                      background: 'rgba(37,99,235,0.15)',
-                      color: '#bfdbfe',
-                      border: '1px solid rgba(37,99,235,0.3)',
+                      background: 'rgba(201,171,132,0.14)',
+                      color: '#e7d7be',
+                      border: '1px solid rgba(201,171,132,0.34)',
                       borderRadius: 999,
                       fontSize: 11,
                       padding: '3px 10px',
@@ -439,8 +439,8 @@ export default function Hero() {
                       transition: 'all 0.2s',
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = 'rgba(37,99,235,0.25)';
-                      e.currentTarget.style.color = '#93c5fd';
+                      e.currentTarget.style.borderColor = 'rgba(201,171,132,0.38)';
+                      e.currentTarget.style.color = '#d4b78f';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.borderColor = 'var(--border)';
@@ -461,8 +461,8 @@ export default function Hero() {
         style={{
           marginTop: 'clamp(32px, 8vw, 64px)',
           background: 'rgba(15,23,42,0.5)',
-          borderTop: '1px solid rgba(148,163,184,0.2)',
-          borderBottom: '1px solid rgba(148,163,184,0.2)',
+          border: '1px solid rgba(148,163,184,0.18)',
+          borderRadius: 12,
           padding: '14px 0',
           overflow: 'hidden',
           width: '100%',
@@ -503,7 +503,7 @@ export default function Hero() {
                   return (
                     <span key={wIdx}>
                       {word}
-                      <span style={{ color: '#2563eb', margin: '0 10px' }}>✦</span>
+                      <span style={{ color: '#9a8566', margin: '0 10px' }}>✦</span>
                     </span>
                   );
                 })}

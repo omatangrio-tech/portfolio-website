@@ -125,8 +125,8 @@ export default function Contact() {
                         width: 40,
                         height: 40,
                         borderRadius: '50%',
-                        background: 'rgba(37,99,235,0.2)',
-                        color: '#93c5fd',
+                        background: 'rgba(201,171,132,0.16)',
+                        color: '#d4b78f',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -199,11 +199,11 @@ export default function Contact() {
                     transition: 'all 0.2s ease',
                   }}
                   onFocus={(e) => {
-                    e.currentTarget.style.borderColor = '#2563eb';
-                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.08)';
+                    e.currentTarget.style.borderColor = '#9a8566';
+                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(201,171,132,0.12)';
                   }}
                   onBlur={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border)';
+                    e.currentTarget.style.borderColor = 'rgba(148,163,184,0.3)';
                     e.currentTarget.style.boxShadow = 'none';
                   }}
                 />
@@ -241,11 +241,11 @@ export default function Contact() {
                     transition: 'all 0.2s ease',
                   }}
                   onFocus={(e) => {
-                    e.currentTarget.style.borderColor = '#2563eb';
-                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.08)';
+                    e.currentTarget.style.borderColor = '#9a8566';
+                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(201,171,132,0.12)';
                   }}
                   onBlur={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border)';
+                    e.currentTarget.style.borderColor = 'rgba(148,163,184,0.3)';
                     e.currentTarget.style.boxShadow = 'none';
                   }}
                 />
@@ -283,11 +283,11 @@ export default function Contact() {
                     transition: 'all 0.2s ease',
                   }}
                   onFocus={(e) => {
-                    e.currentTarget.style.borderColor = '#2563eb';
-                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.08)';
+                    e.currentTarget.style.borderColor = '#9a8566';
+                    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(201,171,132,0.12)';
                   }}
                   onBlur={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border)';
+                    e.currentTarget.style.borderColor = 'rgba(148,163,184,0.3)';
                     e.currentTarget.style.boxShadow = 'none';
                   }}
                 />
@@ -300,7 +300,7 @@ export default function Contact() {
                 style={{
                   width: '100%',
                   height: 56,
-                  background: 'linear-gradient(135deg,#2563eb,#1d4ed8)',
+                  background: 'linear-gradient(135deg,#7a6a52,#9a8566)',
                   color: 'white',
                   fontSize: 16,
                   fontWeight: 600,

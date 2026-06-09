@@ -41,7 +41,7 @@ export default function Experience() {
               top: 0,
               bottom: 0,
               width: 2,
-              background: 'linear-gradient(to bottom, #2563eb, #f97316, transparent)',
+              background: 'linear-gradient(to bottom, #7a6a52, #9ca3af, transparent)',
             }}
           />
 
@@ -78,7 +78,7 @@ export default function Experience() {
                       position: 'absolute',
                       width: 18,
                       height: 18,
-                      border: '2px solid #2563eb',
+                      border: '2px solid #7a6a52',
                       borderRadius: '50%',
                       animation: 'ping 2s infinite',
                       pointerEvents: 'none',
@@ -90,8 +90,8 @@ export default function Experience() {
                       width: 18,
                       height: 18,
                       borderRadius: '50%',
-                      background: 'linear-gradient(135deg, #2563eb, #f97316)',
-                      boxShadow: '0 0 0 4px rgba(37,99,235,0.12), 0 0 20px rgba(37,99,235,0.25)',
+                      background: 'linear-gradient(135deg, #7a6a52, #9a8566)',
+                      boxShadow: '0 0 0 4px rgba(201,171,132,0.14), 0 0 16px rgba(15,23,42,0.26)',
                       zIndex: 2,
                     }}
                   />
@@ -121,7 +121,7 @@ export default function Experience() {
                       right: 0,
                       height: 3,
                       borderRadius: '3px 3px 0 0',
-                      background: 'linear-gradient(90deg, #2563eb, #f97316)',
+                      background: 'linear-gradient(90deg, #7a6a52, #9a8566)',
                     }}
                   />
 
@@ -147,9 +147,9 @@ export default function Experience() {
                     </h3>
                     <span
                       style={{
-                        background: 'rgba(37,99,235,0.18)',
-                        color: '#93c5fd',
-                        border: '1px solid rgba(37,99,235,0.35)',
+                        background: 'rgba(201,171,132,0.16)',
+                        color: '#d4b78f',
+                        border: '1px solid rgba(201,171,132,0.34)',
                         borderRadius: 999,
                         padding: '5px 16px',
                         fontSize: 12,
@@ -174,13 +174,13 @@ export default function Experience() {
                       style={{
                         width: 6,
                         height: 6,
-                        background: '#2563eb',
+                        background: '#7a6a52',
                         borderRadius: '50%',
                       }}
                     />
                     <span
                       style={{
-                        color: '#60a5fa',
+                        color: '#d4b78f',
                         fontSize: 15,
                         fontWeight: 600,
                       }}
@@ -221,7 +221,7 @@ export default function Experience() {
                       >
                         <span
                           style={{
-                            color: '#2563eb',
+                            color: '#7a6a52',
                             flexShrink: 0,
                             fontSize: 14,
                           }}

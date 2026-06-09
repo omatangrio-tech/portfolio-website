@@ -8,7 +8,8 @@ export default function Footer() {
       className="futuristic-section"
       style={{
         background: 'rgba(15,23,42,0.65)',
-        borderTop: '1px solid rgba(148,163,184,0.2)',
+        border: '1px solid rgba(148,163,184,0.18)',
+        borderRadius: 14,
         padding: '56px 0 34px',
       }}
     >
@@ -28,7 +29,7 @@ export default function Footer() {
               style={{
                 fontSize: 20,
                 fontWeight: 800,
-                color: '#93c5fd',
+                color: '#d4b78f',
                 letterSpacing: '0.02em',
               }}
             >
@@ -45,7 +46,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               aria-label="GitHub"
               style={{ color: '#94a3b8', transition: 'color 0.2s' }}
-              onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#93c5fd')}
+              onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#d4b78f')}
               onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#94a3b8')}
             >
               <Github size={20} />
@@ -56,7 +57,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               aria-label="LinkedIn"
               style={{ color: '#94a3b8', transition: 'color 0.2s' }}
-              onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#93c5fd')}
+              onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#d4b78f')}
               onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#94a3b8')}
             >
               <Linkedin size={20} />
@@ -65,8 +66,10 @@ export default function Footer() {
         </div>
         <div
           style={{
-            borderTop: '1px solid rgba(148,163,184,0.2)',
+            border: '1px solid rgba(148,163,184,0.14)',
+            borderRadius: 10,
             paddingTop: 24,
+            paddingBottom: 8,
             textAlign: 'center',
           }}
         >

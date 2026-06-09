@@ -8,17 +8,17 @@ export default function Projects() {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [parallax, setParallax] = useState({ x: 0, y: 0 });
 
-  // Helper to get custom top background gradient based on project ID/index
+  // Helper to get custom top background color based on project index
   const getTopBg = (idx: number) => {
     switch (idx) {
       case 0:
-        return 'linear-gradient(135deg, #eff6ff, #f0fdf4)'; // Leansuite
+        return '#e2e8f0'; // Leansuite
       case 1:
-        return 'linear-gradient(135deg, #fff7ed, #fdf4ff)'; // Gym
+        return '#e5e7eb'; // Gym
       case 2:
-        return 'linear-gradient(135deg, #f0fdf4, #eff6ff)'; // Tiffin
+        return '#dbe3ec'; // Tiffin
       default:
-        return 'linear-gradient(135deg, #f8fafc, #f1f5f9)';
+        return '#e2e8f0';
     }
   };
 
@@ -40,13 +40,13 @@ export default function Projects() {
   const renderIcon = (idx: number) => {
     switch (idx) {
       case 0:
-        return <Globe size={52} color="#2563eb" style={{ opacity: 0.7 }} />;
+        return <Globe size={52} color="#7a6a52" style={{ opacity: 0.7 }} />;
       case 1:
         return <Dumbbell size={52} color="#f97316" style={{ opacity: 0.7 }} />;
       case 2:
         return <Utensils size={52} color="#10b981" style={{ opacity: 0.7 }} />;
       default:
-        return <FolderOpen size={52} color="#2563eb" style={{ opacity: 0.7 }} />;
+        return <FolderOpen size={52} color="#7a6a52" style={{ opacity: 0.7 }} />;
     }
   };
 
@@ -68,7 +68,7 @@ export default function Projects() {
             <div>
               <div className="section-kicker">Selected Work</div>
               <h2 className="display-title" style={{ marginTop: 8 }}>
-                Featured <span className="gradient-text">Projects</span>
+                Featured <span style={{ color: '#d4b78f' }}>Projects</span>
               </h2>
               <p className="section-subtitle">
                 A showcase of my recent development work
@@ -103,10 +103,10 @@ export default function Projects() {
               </p>
               <div style={{ marginTop: 14, display: 'grid', gap: 6 }}>
                 <div style={{ fontSize: 13, color: '#cbd5e1' }}>
-                  <span style={{ color: '#93c5fd' }}>Role:</span> {projects[0].role}
+                  <span style={{ color: '#d4b78f' }}>Role:</span> {projects[0].role}
                 </div>
                 <div style={{ fontSize: 13, color: '#cbd5e1' }}>
-                  <span style={{ color: '#93c5fd' }}>Impact:</span> {projects[0].impact}
+                  <span style={{ color: '#d4b78f' }}>Impact:</span> {projects[0].impact}
                 </div>
               </div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 14 }}>
@@ -114,9 +114,9 @@ export default function Projects() {
                   <span
                     key={tag}
                     style={{
-                      background: 'rgba(37,99,235,0.16)',
-                      color: '#bfdbfe',
-                      border: '1px solid rgba(37,99,235,0.35)',
+                      background: 'rgba(201,171,132,0.14)',
+                      color: '#e7d7be',
+                      border: '1px solid rgba(201,171,132,0.34)',
                       borderRadius: 999,
                       padding: '3px 12px',
                       fontSize: 12,
@@ -137,7 +137,7 @@ export default function Projects() {
                 style={{
                   borderRadius: 18,
                   minHeight: 220,
-                  background: 'linear-gradient(135deg, #eff6ff, #f0fdf4)',
+                  background: '#e2e8f0',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -148,7 +148,7 @@ export default function Projects() {
                 <span style={{ position: 'absolute', fontSize: 76, fontWeight: 900, color: '#0f172a', opacity: 0.12 }}>
                   LS
                 </span>
-                <Globe size={64} color="#2563eb" style={{ opacity: 0.78 }} />
+                <Globe size={64} color="#7a6a52" style={{ opacity: 0.78 }} />
               </div>
               <div style={{ display: 'flex', gap: 16, marginTop: 14 }}>
                 <a
@@ -156,7 +156,7 @@ export default function Projects() {
                   href={projects[0].liveDemo}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ color: '#93c5fd', fontSize: 13, fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}
+                  style={{ color: '#d4b78f', fontSize: 13, fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4 }}
                 >
                   View Live <ExternalLink size={14} />
                 </a>
@@ -184,7 +184,7 @@ export default function Projects() {
                 ? 'rgba(16,185,129,0.25)'
                 : project.status === 'In Progress'
                   ? 'rgba(249,115,22,0.25)'
-                  : 'rgba(59,130,246,0.25)';
+                  : 'rgba(201,171,132,0.24)';
 
             return (
               <div
@@ -212,7 +212,8 @@ export default function Projects() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     position: 'relative',
-                    borderBottom: '1px solid var(--border)',
+                    border: '1px solid rgba(148,163,184,0.18)',
+                    borderRadius: 14,
                   }}
                 >
                   {/* Faded Initials Text */}
@@ -244,7 +245,7 @@ export default function Projects() {
                 >
                   {/* Top Row: FolderOpen + Badges/Links */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <FolderOpen size={22} color="#2563eb" />
+                    <FolderOpen size={22} color="#7a6a52" />
                     <span
                       style={{
                         background: statusColor,
@@ -287,10 +288,10 @@ export default function Projects() {
                   </p>
                   <div style={{ marginTop: 12, display: 'grid', gap: 6 }}>
                     <div style={{ fontSize: 12, color: '#cbd5e1', fontWeight: 500 }}>
-                      <span style={{ color: '#93c5fd' }}>Role:</span> {project.role}
+                      <span style={{ color: '#d4b78f' }}>Role:</span> {project.role}
                     </div>
                     <div style={{ fontSize: 12, color: '#cbd5e1', fontWeight: 500 }}>
-                      <span style={{ color: '#93c5fd' }}>Impact:</span> {project.impact}
+                      <span style={{ color: '#d4b78f' }}>Impact:</span> {project.impact}
                     </div>
                     <div style={{ fontSize: 12, color: '#94a3b8', lineHeight: 1.6 }}>{project.highlight}</div>
                   </div>
@@ -301,9 +302,9 @@ export default function Projects() {
                       <span
                         key={tag}
                         style={{
-                          background: 'rgba(37,99,235,0.16)',
-                          color: '#bfdbfe',
-                          border: '1px solid rgba(37,99,235,0.35)',
+                          background: 'rgba(201,171,132,0.14)',
+                          color: '#e7d7be',
+                          border: '1px solid rgba(201,171,132,0.34)',
                           borderRadius: 999,
                           padding: '3px 12px',
                           fontSize: 12,
@@ -322,8 +323,12 @@ export default function Projects() {
                       alignItems: 'center',
                       gap: 16,
                       marginTop: 24,
-                      borderTop: '1px solid var(--border)',
+                      border: '1px solid rgba(148,163,184,0.14)',
+                      borderRadius: 10,
                       paddingTop: 16,
+                      paddingBottom: 4,
+                      paddingLeft: 10,
+                      paddingRight: 10,
                     }}
                   >
                     <a
@@ -341,7 +346,7 @@ export default function Projects() {
                         gap: 4,
                         transition: 'color 0.2s',
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.color = '#93c5fd')}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = '#d4b78f')}
                       onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}
                     >
                       Live Demo <ExternalLink size={14} />
@@ -361,7 +366,7 @@ export default function Projects() {
                         gap: 4,
                         transition: 'color 0.2s',
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.color = '#93c5fd')}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = '#d4b78f')}
                       onMouseLeave={(e) => (e.currentTarget.style.color = '#94a3b8')}
                     >
                       GitHub <Github size={14} />

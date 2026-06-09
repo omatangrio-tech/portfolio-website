@@ -19,6 +19,17 @@ export default function Navbar() {
     { label: 'Contact', href: '#contact', id: 'contact' },
   ];
 
+  const palette = {
+    accent: '#d4b78f',
+    accentSoft: '#bfa177',
+    textPrimary: '#e2e8f0',
+    textMuted: '#94a3b8',
+    borderSoft: 'rgba(148, 163, 184, 0.24)',
+    borderHover: 'rgba(212, 183, 143, 0.52)',
+    surfaceStrong: 'rgba(15, 23, 42, 0.84)',
+    surfaceSoft: 'rgba(15, 23, 42, 0.64)',
+  };
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 80) {
@@ -122,48 +133,37 @@ export default function Navbar() {
   };
 
   const navStyle: React.CSSProperties = isDesktop
-    ? scrolled
-      ? {
-          position: 'fixed',
-          top: 16,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: 'min(980px, 92vw)',
-          background: 'rgba(15, 23, 42, 0.72)',
-          backdropFilter: 'blur(22px) saturate(145%)',
-          border: '1px solid rgba(148, 163, 184, 0.24)',
-          borderRadius: 9999,
-          padding: '12px clamp(20px, 3vw, 34px)',
-          boxShadow: '0 16px 40px rgba(2, 6, 23, 0.45)',
-          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-          zIndex: 999,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }
-      : {
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          background: 'rgba(2, 6, 23, 0.6)',
-          borderBottom: '1px solid rgba(148, 163, 184, 0.2)',
-          padding: '16px clamp(24px, 5vw, 64px)',
-          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-          zIndex: 999,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }
+    ? {
+        position: 'fixed',
+        top: scrolled ? 14 : 0,
+        left: '50%',
+        transform: `translateX(-50%) ${scrolled ? 'translateY(0)' : 'translateY(-2px)'}`,
+        width: scrolled
+          ? 'min(940px, calc(100vw - 28px))'
+          : 'calc(100vw - clamp(36px, 11vw, 180px))',
+        background: scrolled ? palette.surfaceStrong : palette.surfaceSoft,
+        backdropFilter: scrolled ? 'blur(20px) saturate(128%)' : 'blur(10px) saturate(112%)',
+        border: `1px solid ${scrolled ? palette.borderSoft : 'rgba(148, 163, 184, 0.18)'}`,
+        borderRadius: scrolled ? 9999 : 18,
+        padding: scrolled ? '11px clamp(20px, 3vw, 34px)' : '15px clamp(22px, 5vw, 56px)',
+        boxShadow: scrolled ? '0 8px 26px rgba(2, 6, 23, 0.28)' : 'none',
+        transition:
+          'top 0.48s cubic-bezier(0.22, 1, 0.36, 1), width 0.48s cubic-bezier(0.22, 1, 0.36, 1), border-radius 0.48s cubic-bezier(0.22, 1, 0.36, 1), padding 0.48s cubic-bezier(0.22, 1, 0.36, 1), background 0.32s ease, border-color 0.32s ease, box-shadow 0.32s ease, transform 0.48s cubic-bezier(0.22, 1, 0.36, 1)',
+        zIndex: 999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }
     : {
         position: 'fixed',
         top: 0,
         left: 0,
         width: '100%',
-        background: 'rgba(2, 6, 23, 0.8)',
-        borderBottom: '1px solid rgba(148, 163, 184, 0.2)',
+        background: palette.surfaceStrong,
+        border: `1px solid ${palette.borderSoft}`,
+        borderRadius: 14,
         padding: '14px clamp(16px, 5vw, 24px)',
-        transition: 'all 0.3s ease',
+        transition: 'background 0.28s ease, border-color 0.28s ease',
         zIndex: 999,
         display: 'flex',
         alignItems: 'center',
@@ -180,7 +180,7 @@ export default function Navbar() {
           style={{
             fontSize: 20,
             fontWeight: 800,
-            color: '#93c5fd',
+            color: palette.accent,
             textDecoration: 'none',
             letterSpacing: '0.02em',
           }}
@@ -203,18 +203,28 @@ export default function Navbar() {
                 style={{
                   fontSize: 14,
                   fontWeight: isActive ? 600 : 500,
-                  color: isActive ? '#93c5fd' : '#94a3b8',
+                  color: isActive ? palette.accent : palette.textMuted,
                   textDecoration: 'none',
                   position: 'relative',
-                  transition: 'color 0.2s',
-                  padding: '5px 0',
+                  border: `1px solid ${isActive ? palette.borderHover : 'transparent'}`,
+                  borderRadius: 9999,
+                  transition: 'color 0.2s ease, border-color 0.2s ease, background 0.2s ease',
+                  padding: '6px 10px',
                   letterSpacing: '0.01em',
                 }}
                 onMouseEnter={(e) => {
-                  if (!isActive) e.currentTarget.style.color = '#93c5fd';
+                  if (!isActive) {
+                    e.currentTarget.style.color = palette.textPrimary;
+                    e.currentTarget.style.borderColor = 'rgba(148, 163, 184, 0.35)';
+                    e.currentTarget.style.background = 'rgba(148, 163, 184, 0.05)';
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  if (!isActive) e.currentTarget.style.color = '#94a3b8';
+                  if (!isActive) {
+                    e.currentTarget.style.color = palette.textMuted;
+                    e.currentTarget.style.borderColor = 'transparent';
+                    e.currentTarget.style.background = 'transparent';
+                  }
                 }}
               >
                 {link.label}
@@ -228,7 +238,7 @@ export default function Navbar() {
                       width: 4,
                       height: 4,
                       borderRadius: '50%',
-                      background: '#93c5fd',
+                      background: palette.accent,
                     }}
                   />
                 )}
@@ -243,17 +253,26 @@ export default function Navbar() {
             href="#contact"
             onClick={(e) => handleLinkClick(e, '#contact')}
             style={{
-              background: '#2563eb',
-              color: 'white',
+              background: 'rgba(212, 183, 143, 0.14)',
+              color: palette.accent,
+              border: `1px solid ${palette.borderHover}`,
               borderRadius: 999,
               padding: '9px 20px',
               fontSize: 13,
               fontWeight: 600,
               textDecoration: 'none',
-              transition: 'background 0.2s',
+              transition: 'background 0.2s ease, border-color 0.2s ease, color 0.2s ease',
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = '#1d4ed8')}
-            onMouseLeave={(e) => (e.currentTarget.style.background = '#2563eb')}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(212, 183, 143, 0.22)';
+              e.currentTarget.style.borderColor = palette.accentSoft;
+              e.currentTarget.style.color = '#f8fafc';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(212, 183, 143, 0.14)';
+              e.currentTarget.style.borderColor = palette.borderHover;
+              e.currentTarget.style.color = palette.accent;
+            }}
           >
             Hire Me
           </a>
@@ -266,7 +285,7 @@ export default function Navbar() {
           style={{
             background: 'none',
             border: 'none',
-            color: '#93c5fd',
+            color: palette.accent,
             padding: 4,
           }}
           aria-label="Open menu"
@@ -287,7 +306,7 @@ export default function Navbar() {
             style={{
               position: 'fixed',
               inset: 0,
-              background: 'rgba(15, 23, 42, 0.4)',
+                background: 'rgba(15, 23, 42, 0.45)',
               zIndex: 1000,
               display: 'flex',
               justifyContent: 'flex-end',
@@ -302,9 +321,9 @@ export default function Navbar() {
               style={{
                 width: 'min(88vw, 360px)',
                 height: '100%',
-                background: 'rgba(15,23,42,0.96)',
+                background: 'rgba(15,23,42,0.97)',
                 borderLeft: '1px solid rgba(148,163,184,0.24)',
-                boxShadow: '-12px 0 36px rgba(2, 6, 23, 0.15)',
+                boxShadow: '-8px 0 26px rgba(2, 6, 23, 0.2)',
                 display: 'flex',
                 flexDirection: 'column',
                 padding: '20px clamp(16px, 5vw, 28px)',
@@ -316,7 +335,7 @@ export default function Navbar() {
                   style={{
                     fontSize: 'clamp(19px, 4.5vw, 22px)',
                     fontWeight: 800,
-                    color: '#93c5fd',
+                    color: palette.accent,
                   }}
                 >
                   Om.dev
@@ -326,7 +345,7 @@ export default function Navbar() {
                   style={{
                     background: 'none',
                     border: 'none',
-                    color: '#93c5fd',
+                    color: palette.accent,
                     padding: 4,
                   }}
                   aria-label="Close menu"
@@ -359,10 +378,13 @@ export default function Navbar() {
                     style={{
                       fontSize: 'clamp(18px, 6vw, 22px)',
                       fontWeight: 700,
-                      color: activeSection === link.id ? '#93c5fd' : '#e2e8f0',
+                      color: activeSection === link.id ? palette.accent : '#e2e8f0',
                       textDecoration: 'none',
                       padding: '10px 0',
-                      borderBottom: '1px solid rgba(148, 163, 184, 0.16)',
+                      border: `1px solid ${activeSection === link.id ? palette.borderHover : 'rgba(148, 163, 184, 0.16)'}`,
+                      borderRadius: 8,
+                      paddingLeft: 10,
+                      paddingRight: 10,
                     }}
                   >
                     {link.label}
@@ -378,8 +400,9 @@ export default function Navbar() {
                 exit={{ opacity: 0, y: 10 }}
                 transition={{ duration: 0.22, delay: 0.15, ease: 'easeOut' }}
                 style={{
-                  background: '#2563eb',
-                  color: 'white',
+                  background: 'rgba(212, 183, 143, 0.14)',
+                  color: palette.accent,
+                  border: `1px solid ${palette.borderHover}`,
                   borderRadius: 999,
                   padding: '12px 20px',
                   fontSize: 'clamp(14px, 4vw, 16px)',

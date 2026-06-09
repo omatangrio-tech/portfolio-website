@@ -116,7 +116,7 @@ export default function About() {
                 style={{
                   position: 'absolute',
                   inset: -16,
-                  border: '2px dashed rgba(37, 99, 235, 0.15)',
+                  border: '2px dashed rgba(201, 171, 132, 0.2)',
                   borderRadius: '50%',
                   animation: 'spin-slow 20s linear infinite',
                   pointerEvents: 'none',

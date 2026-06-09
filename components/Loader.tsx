@@ -37,7 +37,7 @@ export default function Loader() {
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24, width: '100%', maxWidth: 280, padding: '0 24px' }}>
             <h1
               style={{
-                color: '#2563eb',
+                color: '#7a6a52',
                 fontSize: 36,
                 fontWeight: 800,
                 letterSpacing: '0.05em',
@@ -51,7 +51,7 @@ export default function Loader() {
               <motion.div
                 style={{
                   height: '100%',
-                  background: 'linear-gradient(90deg, #2563eb, #f97316)',
+                  background: 'linear-gradient(90deg, #7a6a52, #9ca3af)',
                 }}
                 initial={{ width: '0%' }}
                 animate={{ width: '100%' }}
