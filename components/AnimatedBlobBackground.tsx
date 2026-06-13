@@ -2,6 +2,15 @@
 
 import { useEffect, useRef } from 'react';
 
+interface Blob {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
+  opacity: number;
+}
+
 export default function AnimatedBlobBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -9,63 +18,64 @@ export default function AnimatedBlobBackground() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // Particle system
-    interface Particle {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      radius: number;
-      opacity: number;
-    }
+    // Reduced particle count for better performance
+    const blobs: Blob[] = [];
+    const blobCount = 20; // Reduced from 50
 
-    const particles: Particle[] = [];
-    const particleCount = 40;
-
-    for (let i = 0; i < particleCount; i++) {
-      particles.push({
+    for (let i = 0; i < blobCount; i++) {
+      blobs.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        radius: Math.random() * 40 + 20,
-        opacity: Math.random() * 0.3 + 0.1,
+        vx: (Math.random() - 0.5) * 0.2, // Slower movement
+        vy: (Math.random() - 0.5) * 0.2,
+        radius: Math.random() * 50 + 20,
+        opacity: Math.random() * 0.3 + 0.05,
       });
     }
 
     let animationId: number;
+    let frameCount = 0;
 
     const animate = () => {
+      // Clear canvas - optimize by only clearing once per frame
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
+      // Draw blobs with optimized rendering
+      blobs.forEach((blob) => {
+        blob.x += blob.vx;
+        blob.y += blob.vy;
 
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
+        // Wrap around edges
+        if (blob.x < 0) blob.x = canvas.width;
+        if (blob.x > canvas.width) blob.x = 0;
+        if (blob.y < 0) blob.y = canvas.height;
+        if (blob.y > canvas.height) blob.y = 0;
 
-        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
-        gradient.addColorStop(0, `rgba(212, 183, 143, ${p.opacity})`);
-        gradient.addColorStop(0.5, `rgba(212, 183, 143, ${p.opacity * 0.5})`);
+        // Draw gradient blob - simplified for performance
+        const gradient = ctx.createRadialGradient(
+          blob.x, blob.y, 0,
+          blob.x, blob.y, blob.radius * 1.5
+        );
+
+        gradient.addColorStop(0, `rgba(212, 183, 143, ${blob.opacity})`);
+        gradient.addColorStop(0.7, `rgba(212, 183, 143, ${blob.opacity * 0.4})`);
         gradient.addColorStop(1, `rgba(212, 183, 143, 0)`);
 
         ctx.fillStyle = gradient;
-        ctx.fillRect(p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
+        ctx.beginPath();
+        ctx.arc(blob.x, blob.y, blob.radius, 0, Math.PI * 2);
+        ctx.fill();
       });
 
+      frameCount++;
       animationId = requestAnimationFrame(animate);
     };
-
-    animate();
 
     const handleResize = () => {
       canvas.width = window.innerWidth;
@@ -73,10 +83,11 @@ export default function AnimatedBlobBackground() {
     };
 
     window.addEventListener('resize', handleResize);
+    animate();
 
     return () => {
-      cancelAnimationFrame(animationId);
       window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animationId);
     };
   }, []);
 
@@ -88,8 +99,8 @@ export default function AnimatedBlobBackground() {
         top: 0,
         left: 0,
         pointerEvents: 'none',
-        zIndex: 0,
-        opacity: 0.6,
+        zIndex: 1,
+        opacity: 0.5, // Reduced opacity
       }}
     />
   );

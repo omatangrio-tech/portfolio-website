@@ -5,12 +5,9 @@ import { useEffect, useRef, useState } from 'react';
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-  const fillRef = useRef<HTMLDivElement>(null);
-  const mousePos = useRef({ x: -100, y: -100 });
-  const ringPos = useRef({ x: -100, y: -100 });
-  const isHoveredRef = useRef(false);
   const [visible, setVisible] = useState(false);
   const [isPointerDevice, setIsPointerDevice] = useState(false);
+  const isHoveredRef = useRef(false);
 
   useEffect(() => {
     const media = window.matchMedia('(hover: hover) and (pointer: fine)');
@@ -20,167 +17,127 @@ export default function CustomCursor() {
     return () => media.removeEventListener('change', apply);
   }, []);
 
-  // Sync cursor-none class with visibility state to hide system cursor safely
   useEffect(() => {
     if (visible && isPointerDevice) {
       document.documentElement.classList.add('custom-cursor-active');
     } else {
       document.documentElement.classList.remove('custom-cursor-active');
     }
-    return () => {
-      document.documentElement.classList.remove('custom-cursor-active');
-    };
+    return () => document.documentElement.classList.remove('custom-cursor-active');
   }, [visible, isPointerDevice]);
 
   useEffect(() => {
+    if (!isPointerDevice) return;
+
     const dot = dotRef.current;
     const ring = ringRef.current;
-    const fill = fillRef.current;
-    if (!dot || !ring || !fill || !isPointerDevice) return;
+    if (!dot || !ring) return;
 
-    let animFrame: number;
+    let lastX = 0;
+    let lastY = 0;
+    let ringX = 0;
+    let ringY = 0;
 
     const onMouseMove = (e: MouseEvent) => {
-      mousePos.current = { x: e.clientX, y: e.clientY };
-      
-      if (!visible) {
-        setVisible(true);
-      }
+      lastX = e.clientX;
+      lastY = e.clientY;
+      setVisible(true);
+
+      dot.style.transform = `translate3d(${e.clientX - 4}px, ${e.clientY - 4}px, 0)`;
+
+      // Lerp ring position for smooth follow
+      ringX += (lastX - ringX) * 0.15;
+      ringY += (lastY - ringY) * 0.15;
+      ring.style.transform = `translate3d(${ringX - 15}px, ${ringY - 15}px, 0)`;
     };
 
     const onMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const hoverable = target.closest('[data-cursor], a, button, [role="button"], input, textarea');
-      isHoveredRef.current = Boolean(hoverable);
+      isHoveredRef.current = Boolean(target.closest('a, button, [role="button"], input, textarea'));
+      updateCursor();
     };
 
-    const onMouseOut = (e: MouseEvent) => {
-      const related = (e.relatedTarget as HTMLElement | null) ?? null;
-      const hoverable = related?.closest('[data-cursor], a, button, [role="button"], input, textarea');
-      isHoveredRef.current = Boolean(hoverable);
+    const onMouseOut = () => {
+      isHoveredRef.current = false;
+      updateCursor();
+    };
+
+    const updateCursor = () => {
+      if (isHoveredRef.current) {
+        dot.style.opacity = '1';
+        dot.style.background = 'rgba(245, 158, 11, 0.9)';
+        ring.style.borderColor = 'rgba(245, 158, 11, 0.6)';
+        ring.style.opacity = '1';
+      } else {
+        dot.style.opacity = '1';
+        dot.style.background = 'rgba(212, 183, 143, 0.7)';
+        ring.style.borderColor = 'rgba(212, 183, 143, 0.4)';
+        ring.style.opacity = '0.7';
+      }
     };
 
     const onMouseLeave = () => {
+      setVisible(false);
       dot.style.opacity = '0';
       ring.style.opacity = '0';
     };
 
     const onMouseEnter = () => {
-      if (visible) {
-        dot.style.opacity = '1';
-        ring.style.opacity = '1';
-      }
+      setVisible(true);
+      updateCursor();
     };
 
     const onTouchStart = () => {
-      // If user touches screen, disable custom cursor to restore defaults
       setVisible(false);
     };
 
-    const animate = () => {
-      if (visible) {
-        dot.style.transform = `translate3d(${mousePos.current.x - 4}px, ${mousePos.current.y - 4}px, 0)`;
-        dot.style.opacity = '1';
-        dot.style.background = isHoveredRef.current ? '#c9ab84' : '#7a6a52';
-
-        // Lerp ring position smoothly
-        ringPos.current.x += (mousePos.current.x - ringPos.current.x) * 0.15;
-        ringPos.current.y += (mousePos.current.y - ringPos.current.y) * 0.15;
-        const ringSize = isHoveredRef.current ? 40 : 34;
-        ring.style.width = `${ringSize}px`;
-        ring.style.height = `${ringSize}px`;
-        ring.style.borderColor = isHoveredRef.current
-          ? 'rgba(201, 171, 132, 0.62)'
-          : 'rgba(122, 106, 82, 0.56)';
-        ring.style.transform = `translate3d(${ringPos.current.x - ringSize / 2}px, ${ringPos.current.y - ringSize / 2}px, 0)`;
-        ring.style.opacity = '1';
-
-        fill.style.background = isHoveredRef.current ? 'rgba(201, 171, 132, 0.08)' : 'transparent';
-        fill.style.transform = isHoveredRef.current ? 'scale(1.24)' : 'scale(1)';
-      } else {
-        dot.style.opacity = '0';
-        ring.style.opacity = '0';
-      }
-      
-      animFrame = requestAnimationFrame(animate);
-    };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseover', onMouseOver);
-    document.addEventListener('mouseout', onMouseOut);
-    document.addEventListener('touchstart', onTouchStart, { passive: true });
-    document.documentElement.addEventListener('mouseleave', onMouseLeave);
-    document.documentElement.addEventListener('mouseenter', onMouseEnter);
-    
-    animFrame = requestAnimationFrame(animate);
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseover', onMouseOver);
+    window.addEventListener('mouseout', onMouseOut);
+    window.addEventListener('mouseleave', onMouseLeave);
+    window.addEventListener('mouseenter', onMouseEnter);
+    window.addEventListener('touchstart', onTouchStart);
 
     return () => {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseover', onMouseOver);
-      document.removeEventListener('mouseout', onMouseOut);
-      document.removeEventListener('touchstart', onTouchStart);
-      document.documentElement.removeEventListener('mouseleave', onMouseLeave);
-      document.documentElement.removeEventListener('mouseenter', onMouseEnter);
-      cancelAnimationFrame(animFrame);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseover', onMouseOver);
+      window.removeEventListener('mouseout', onMouseOut);
+      window.removeEventListener('mouseleave', onMouseLeave);
+      window.removeEventListener('mouseenter', onMouseEnter);
+      window.removeEventListener('touchstart', onTouchStart);
     };
   }, [visible, isPointerDevice]);
 
-  if (!isPointerDevice) return null;
-
   return (
     <>
-      {/* Dot */}
-      <div
-        ref={dotRef}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: 8,
-          height: 8,
-          background: '#7a6a52',
-          borderRadius: '50%',
-          pointerEvents: 'none',
-          zIndex: 100000,
-          opacity: 0,
-          transition: 'background 0.2s ease, opacity 0.2s ease',
-          willChange: 'transform',
-        }}
-      />
-      
-      {/* Ring */}
       <div
         ref={ringRef}
         style={{
           position: 'fixed',
-          top: 0,
-          left: 0,
-          width: 36,
-          height: 36,
-          border: '2px solid rgba(122, 106, 82, 0.56)',
+          width: '30px',
+          height: '30px',
+          border: '1.5px solid rgba(212, 183, 143, 0.4)',
           borderRadius: '50%',
           pointerEvents: 'none',
-          zIndex: 99999,
+          zIndex: 10001,
           opacity: 0,
-          transition: 'background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease, width 0.2s ease, height 0.2s ease',
           willChange: 'transform',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
         }}
-      >
-        <div
-          ref={fillRef}
-          style={{
-            width: '100%',
-            height: '100%',
-            borderRadius: '50%',
-            background: 'transparent',
-            transform: 'scale(1)',
-            transition: 'transform 0.15s ease-out, background 0.2s ease',
-          }}
-        />
-      </div>
+      />
+      <div
+        ref={dotRef}
+        style={{
+          position: 'fixed',
+          width: '8px',
+          height: '8px',
+          background: 'rgba(212, 183, 143, 0.7)',
+          borderRadius: '50%',
+          pointerEvents: 'none',
+          zIndex: 10001,
+          opacity: 0,
+          willChange: 'transform',
+        }}
+      />
     </>
   );
 }
