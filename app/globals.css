@@ -350,6 +350,90 @@ h1, h2, h3, h4 {
   50% { opacity: 0.5; transform: scale(1.3); }
 }
 
+/* Premium Glassmorphism Effects */
+.glass-effect {
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06),
+              0 8px 32px rgba(15, 23, 42, 0.3);
+}
+
+/* Enhanced Hover Animations */
+.premium-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(212, 183, 143, 0.1) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.premium-panel:hover::before {
+  opacity: 1;
+}
+
+/* Glow Effects */
+.glow-gold {
+  text-shadow: 0 0 20px rgba(212, 183, 143, 0.5),
+               0 0 40px rgba(212, 183, 143, 0.3);
+}
+
+.glow-border {
+  box-shadow: 0 0 20px rgba(212, 183, 143, 0.3),
+              inset 0 0 20px rgba(212, 183, 143, 0.1);
+}
+
+/* Scroll Reveal Animation */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: revealOnScroll 0.8s ease-out forwards;
+}
+
+@keyframes revealOnScroll {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Enhanced Badge Pulse */
+@keyframes badge-glow {
+  0%, 100% {
+    border-color: rgba(201, 171, 132, 0.38);
+    box-shadow: 0 0 12px rgba(212, 183, 143, 0.2);
+  }
+  50% {
+    border-color: rgba(201, 171, 132, 0.58);
+    box-shadow: 0 0 20px rgba(212, 183, 143, 0.4);
+  }
+}
+
+.glow-badge {
+  animation: badge-glow 2.5s ease infinite;
+}
+
+/* Smooth Transitions */
+* {
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Text Shadow Depth */
+.text-shadow-deep {
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.1),
+    0 4px 8px rgba(0, 0, 0, 0.2),
+    0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
 /* Lenis Smooth Scroll Recommended Rules */
 html.lenis, html.lenis body {
   height: auto;

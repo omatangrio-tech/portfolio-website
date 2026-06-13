@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import ScrollProgress from '@/components/ScrollProgress';
 import BackToTop from '@/components/BackToTop';
 import Loader from '@/components/Loader';
+import AnimatedBlobBackground from '@/components/AnimatedBlobBackground';
 
 const CustomCursor = dynamic(() => import('@/components/CustomCursor'), { ssr: false });
 
@@ -27,6 +28,7 @@ export default function RootLayout({
           <div className="futuristic-ambient-grid" />
           <div className="futuristic-noise" />
         </div>
+        <AnimatedBlobBackground />
         <LenisProvider>
           <Loader />
           <CustomCursor />
